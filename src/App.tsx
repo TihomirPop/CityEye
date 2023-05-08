@@ -20,9 +20,18 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if(user) {
-        updateDoc(doc(db, 'webUsers', user.uid), {lastActive: serverTimestamp()});
-        getDoc(doc(db, 'webUsers', user.uid))
-        .then((doc) => {setCurrentUser({id: doc.id, ...doc.data()});})
+        getDoc(doc(db, 'webUsers', user.uid)).then((docSnap) => {
+          if(docSnap.exists()){
+            updateDoc(doc(db, 'webUsers', user.uid), {lastActive: serverTimestamp()})
+            getDoc(doc(db, 'webUsers', user.uid))
+            .then((doc) => {
+            if(doc.data() != undefined)
+              setCurrentUser({id: doc.id, ...doc.data()});})
+          }
+          else{
+            signOut();
+          }
+        });
       }
     })
   }, []);
