@@ -22,15 +22,12 @@ const MarkerMap = () => {
 
     useEffect(() => {
         getDocs(collection(db, 'markers')).then((results) => {
-            const markersList: Marker[] = [];
-            results.docs.forEach((doc: any) => {
-                markersList.push({
+            const markersList: Marker[] = results.docs.map((doc: any) => ({
                 id: doc.id,
                 type: doc.data().type,
                 address: doc.data().address,
                 latLng: {lat: doc.data().lat, lng: doc.data().lng}
-                });
-            });
+            }));
             setMarkers(markersList);
         })
     }, []);

@@ -4,6 +4,8 @@ import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { db } from '../../config/Firebase';
 import Image from './Image';
 
+import LoadingGif from '../assets/loading.gif';
+
 export interface ProblemInterface{
     id: string;
     address: string;
@@ -37,7 +39,7 @@ function Problem({problem, selectProblem}: Props) {
                 setOdgovor(doc.data()?.response);
             });
         }
-    }, [problem])
+    }, [])
 
     const dateToString = (date: Date) => {
         const day = date.getDate();
@@ -54,20 +56,14 @@ function Problem({problem, selectProblem}: Props) {
                 timeOfResponse: dateToString(new Date()),
                 userID: problem.uid
             });
-            updateDoc(doc(db, 'problems', problem.id), {
-                solved: true
-            });
             setSendingAnswer(true);
-            setTimeout(() => {
-                setSendingAnswer(false);
-            }, 2500);
         }
     }
 
     return (
     <div className="grid__item">
         {
-            sendingAnswer ? <img className='card__sending' alt='sending...' src='https://flevix.com/wp-content/uploads/2019/12/Quarter-Circle-Loading-Image-1.gif' /> :
+            sendingAnswer ? <img className='card__sending' alt='sending...' src={LoadingGif} /> :
             <>
                 <Image img={problem.imageName} className='card__img' />
                 <div className="card__content">

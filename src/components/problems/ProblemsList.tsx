@@ -7,12 +7,10 @@ import Problem, { ProblemInterface } from './Problem';
 import Image from './Image';
 import ProblemsMap from './ProblemsMap';
 
-
-
 const ProblemsList = () => {
   const [problems, setProblems] = useState<ProblemInterface[]>([]);
   const [filteredProblems, setFilteredProblems] = useState<ProblemInterface[]>([]);
-  const [selectedProblem, setSelectedProblem] = useState<any>(null);
+  const [selectedProblem, setSelectedProblem] = useState<ProblemInterface | null>(null);
   const [answer, setAnswer] = useState('');
   const [odgovor, setOdgovor] = useState<any>(null);
   const [solvedIsChecked, setSolvedIsChecked] = useState(false);
@@ -24,13 +22,8 @@ const ProblemsList = () => {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'problems'), (snapshot) => {
-      const problemsList: ProblemInterface[] = [];
-      snapshot.docs.forEach((doc: any) => {
-        problemsList.push({
-          id: doc.id,
-          ...doc.data()
-        });
-      });
+      const problemsList: ProblemInterface[] = snapshot.docs.map((doc: any) => ({id: doc.id, ...doc.data()}));
+
       problemsList.sort((a: ProblemInterface, b: ProblemInterface) => {
         if(a.imageName.substring(5, 24) < b.imageName.substring(5, 24)){
           return 1;
@@ -94,7 +87,7 @@ const ProblemsList = () => {
   }
 
   const odgovori = async () => {
-    if(answer.length > 3){
+    if(answer.length > 3 && selectedProblem){
       addDoc(collection(db, 'answers'), {
         problemID: selectedProblem.id,
         response: answer,
