@@ -49,7 +49,7 @@ function Problem({problem, selectProblem}: Props) {
     }
     
     const odgovori = async () => {
-        if(answer.length > 3){
+        if(answer.length > 3 && answer.length <= 100){
             addDoc(collection(db, 'answers'), {
                 problemID: problem.id,
                 response: answer,

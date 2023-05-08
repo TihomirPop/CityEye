@@ -87,7 +87,7 @@ const ProblemsList = () => {
   }
 
   const odgovori = async () => {
-    if(answer.length > 3 && selectedProblem){
+    if(answer.length > 3 && answer.length <= 100 && selectedProblem){
       addDoc(collection(db, 'answers'), {
         problemID: selectedProblem.id,
         response: answer,

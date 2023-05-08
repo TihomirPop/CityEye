@@ -3,8 +3,13 @@ import { getFunctions, httpsCallable } from "firebase/functions";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "../../config/Firebase";
 import '../../styles/Users.css'
+import { WebUser } from "./User";
 
-function AddUser() {
+interface Props{
+  currentUser: WebUser;
+}
+
+function AddUser({currentUser}: Props) {
   const [email, setEmail] = useState("");
   const [ime, setIme] = useState("");
   const [prezime, setPrezime] = useState("");
@@ -26,7 +31,8 @@ function AddUser() {
         role: 'user',
         ime: ime,
         prezime: prezime,
-        lastActive: serverTimestamp()
+        lastActive: serverTimestamp(),
+        city: currentUser.city
       });
       console.log('User created:', data.user);
       

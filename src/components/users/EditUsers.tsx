@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import 'firebase/firestore';
 import '../../styles/Users.css'
 import { db } from "../../config/Firebase";
@@ -15,14 +15,15 @@ function EditUsers({currentUser}: Props) {
     const [users, setUsers] = useState<WebUser[]>([]);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, 'webUsers'), (snapshot) => {
+        const unsubscribe = onSnapshot(query(collection(db, 'webUsers'), where('city', '==', currentUser.city)), (snapshot) => {
             const userList: WebUser[] = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 email: doc.data().email,
                 ime: doc.data().ime,
                 prezime: doc.data().prezime,
                 lastActive: doc.data().lastActive ? doc.data().lastActive.toDate() : new Date(),
-                role: doc.data().role
+                role: doc.data().role,
+                city: doc.data().city
             }));
             userList.sort((a: WebUser, b: WebUser) => a.email.localeCompare(b.email));
             setUsers(userList);
@@ -32,7 +33,7 @@ function EditUsers({currentUser}: Props) {
 
     return(
         <div className="listWrapper">
-            <AddUser />
+            <AddUser currentUser={currentUser} />
             <ul>
                 <li className="userRow header" key="pocetak">
                     <div className="small userElements">#</div>

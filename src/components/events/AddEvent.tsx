@@ -2,14 +2,18 @@ import { useState } from 'react';
 import 'firebase/firestore';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../../config/Firebase';
+import { WebUser } from '../users/User';
 
-const AddEvent = () => {
+interface Props{
+  currentUser: WebUser;
+}
+
+const AddEvent = ({currentUser}: Props) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [epochStart, setEpochStart] = useState('');
   const [epochEnd, setEpochEnd] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  //const [city, setCity] = useState('');
   const [location, setLocation] = useState('');
   const [locationAddress, setLocationAddress] = useState('');
   const [price, setPrice] = useState(0);
@@ -23,7 +27,7 @@ const AddEvent = () => {
       epochStart: (new Date(epochStart)).getTime() / 1000,
       epochEnd: (new Date(epochEnd)).getTime() / 1000,
       imageUrl: imageUrl,
-      city: 'Zagreb',
+      city: currentUser.city,
       location: location,
       locationAddress: locationAddress,
       price: price
@@ -34,7 +38,6 @@ const AddEvent = () => {
     setEpochStart('');
     setEpochEnd('')
     setImageUrl('');
-    //setCity('');
     setLocation('');
     setLocationAddress('');
     setPrice(0);

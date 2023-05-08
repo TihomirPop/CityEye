@@ -59,7 +59,7 @@ function App() {
       case 'EditUsers':
         return <EditUsers currentUser={currentUser} />;
       case 'Events':
-        return <EventsList />;
+        return <EventsList currentUser={currentUser} />;
       case 'Map':
         return (isLoaded ? <MarkerMap /> : <p>Loading...</p>);
       case 'Problems':

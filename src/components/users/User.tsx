@@ -12,7 +12,8 @@ export interface WebUser{
     ime: string;
     prezime: string;
     lastActive: Date;
-    role: string
+    role: string,
+    city: string
 }
 
 interface Props{
