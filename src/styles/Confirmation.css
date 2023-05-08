@@ -1,0 +1,26 @@
+.areYouSureGrayedOut{
+    background-color: rgba(128, 128, 128, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9998;
+}
+.areYouSurePopup{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.areYouSurePopup p{
+    text-align: center;
+}
+.areYouSurePopup button{
+    margin: 0 10px;
+}

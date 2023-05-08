@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600&family=Rokkitt:wght@200&display=swap');
+
+*{
+  margin: 0;
+  padding: 0;
+}
+html{
+  background-color: #F1F2FC;
+}
+#root{
+  background-color: #F1F2FC;
+}
+.main{
+  height: 100%;
+  width: 100%;
+}
+#mainScreen{
+  height: 100%;
+  display: flex;
+}
+#content{
+  margin-left: 80px;
+  min-height: 100%;
+}
+#content {
+  flex-grow: 1; /* grow to fill remaining space */
+  flex-shrink: 1; /* shrink if necessary */
+  flex-basis: auto; /* set default width */
+}

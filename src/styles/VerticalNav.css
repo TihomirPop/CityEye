@@ -1,0 +1,46 @@
+
+.vertical-nav {
+    height: 100%;
+    width: 80px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-color: #F1F2FC;
+    border-right: 1px solid #ccc;
+    position: fixed;
+}
+
+.nav-list{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.vertical-nav li {
+    margin: 0;
+    padding: 0;
+}
+
+.vertical-nav li button {
+    display: block;
+    padding: 0;
+    margin: 10px;
+    width: 60px;
+    text-decoration: none;
+    color: #475569;
+    border-radius: 100%;
+    border-color: white;
+    aspect-ratio: 1/1;
+    font-size: larger;
+    border: 0;
+}
+
+.selectedButton{
+    background-color: #DBEAFE;
+}
+
+.unselectedButton:hover {
+background-color: #ddd;
+transition-duration: 200ms;
+}
+

@@ -1,0 +1,132 @@
+.grid {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+.grid__item {
+    width: 300px;
+    height: 500px;
+    background-color: #fff;
+    box-shadow: 0 3rem 6rem rgba(0, 0, 0, 0.1);
+    transition: 0.2s;
+    border-radius: 20px;
+    margin: 10px;
+}
+.grid__item:hover {
+  transform: translateY(-0.5%);
+  box-shadow: 0 4rem 8rem rgba(0, 0, 0, 0.2);
+}
+
+.card__img {
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+.card__content {
+  height: 300px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.card__header {
+  color: #0d0d0d;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.card__header:hover{
+  cursor: pointer;
+}
+.card__text {
+  color: #3d3d3d;
+}
+.card__btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  color: #3363ff;
+  background-color: #e6ecff;
+  border: none;
+  border-radius: 0.4rem;
+  transition: 0.2s;
+  cursor: pointer;
+  padding: 10px;
+  margin-top: 5px;
+}
+.card__btn span {
+  margin-left: 1rem;
+  transition: 0.2s;
+}
+.card__btn:hover, .card__btn:active {
+  background-color: #dce4ff;
+}
+.card__btn:hover span, .card__btn:active span {
+  margin-left: 1.5rem;
+}
+
+.map-container{
+  margin: 10px auto;
+  width: 90%;
+  height: 400px;
+}
+#problemListSearchBar{
+  width: 500px;
+  margin: 20px auto;
+}
+
+.card__content h1{
+  font-size: xx-large;
+  text-align: center;
+}
+.card__content p{
+  text-align: center;
+}
+.card__sending{
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+#grayedOut{
+  background-color: rgba(128, 128, 128, 0.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background-color: white;
+  border-radius: 20px;
+  width: 40%;
+  height: 90%;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.popupImage {
+  display: block;
+  max-height: 55%;
+  margin: 0 auto;
+  object-fit: contain;
+  border-radius: 20px;
+}
+
+.popupContent{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 45%;
+  text-align: center;
+}

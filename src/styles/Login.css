@@ -1,0 +1,70 @@
+.loginLogo{
+    width: 652.27px;
+    height: 343.74px;
+
+    font-family: 'Rokkitt';
+    font-style: normal;
+    font-weight: 200;
+    font-size: 200px;
+    line-height: 156px;
+    /* or 78% */
+
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.505em;
+    font-feature-settings: 'pnum' on, 'lnum' on;
+    
+    margin: 0 auto;
+
+    color: #000000;
+}
+.login{
+    width: 100%;
+    padding-top: 200px;
+}
+.loginWrapper{
+    margin: 0 auto;
+    width: 430px;
+    padding: 50px;
+    background: linear-gradient(0deg, rgba(113, 90, 174, 0.11), rgba(113, 90, 174, 0.11)), #FFFBFE;
+    border-radius: 36.9644px;
+}
+.signInButtonWrapper{
+    width: 100%;
+    text-align: center;
+}
+#signInButton{
+    margin-top: 20px;
+    width: 100%;
+    height: 60px;
+    background-color: #190152;
+    font-family: 'Outfit';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 30px;
+    border-radius: 20px;
+}
+#loginAlert{
+    position: absolute;
+    width: 90%;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%);
+}
+#logoLine{
+    border-right: 1px solid #CAC4D0;
+    width: 0;
+    height: calc(100% + 200px);
+    margin-top: -100px;
+    margin-left: 50px;
+}
+
+@media only screen and (max-width: 1200px) {
+    #logoLine {
+        display: none;
+    }
+    .login{
+        padding-top: 0;
+    }
+}
