@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
 import '../../styles/Problems.css'
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { db } from '../../config/Firebase';
