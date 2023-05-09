@@ -38,6 +38,7 @@ function Dropdown({userRole, setRoleFunction}: Props) {
       </button>
       {isOpen && (
         <div className='user-dropdown-menu'>
+            <div className='dropdown-first-element' />
             <div className='dropdown-element' onClick={adminClick}>admin</div>
             <div className='dropdown-element' onClick={userClick}>user</div>
         </div>

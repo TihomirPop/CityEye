@@ -1,4 +1,3 @@
-
 .vertical-nav {
     height: 100%;
     width: 80px;
@@ -40,7 +39,7 @@
 }
 
 .unselectedButton:hover {
-background-color: #ddd;
-transition-duration: 200ms;
+    background-color: #ddd;
+    transition-duration: 200ms;
 }
 

@@ -9,8 +9,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 export interface WebUser{
     id: string;
     email: string;
-    ime: string;
-    prezime: string;
+    name: string;
     lastActive: Date;
     role: string,
     city: string
@@ -24,8 +23,10 @@ interface Props{
 
 function User({user, index, currentUser}: Props) {
     const [popup, setPopup] = useState(false);
-    const [editRole, setEditRole] = useState(false);
+    const [editing, setEditing] = useState(false);
     const [role, setRole] = useState('');
+    const [name, setName] = useState(user.name);
+    const [email, setEmail] = useState(user.email);
 
     const functions = getFunctions();
     const deleteWebUser = httpsCallable(functions, 'deleteWebUser');
@@ -45,9 +46,13 @@ function User({user, index, currentUser}: Props) {
         setPopup(false);
     }
 
-    const updateRole = () => {
-        updateDoc(doc(db, 'webUsers', user.id), {role: role})
-        setEditRole(false);
+    const updateUser = () => {
+        updateDoc(doc(db, 'webUsers', user.id), {
+            role: role,
+            name: name,
+            email: email
+        })
+        setEditing(false);
     }
 
     const isUserAdmin = () =>{
@@ -60,8 +65,8 @@ function User({user, index, currentUser}: Props) {
                 </>);
             return (
             <>
-                <div className='userElements small' onClick={() => editRole ? updateRole() : setEditRole(true)} >{ editRole ? <i className='fa-solid fa-check userButtons' /> : <i className='fa-solid fa-pen-to-square userButtons' />}</div>
-                <div className='userElements small' onClick={() => editRole ? setEditRole(false) : setPopup(true)}>{editRole ? <i className='fa-solid fa-x userButtons' /> : <i className='fa-solid fa-trash-can userButtons' />}</div>
+                <div className='userElements small' onClick={() => editing ? updateUser() : setEditing(true)} >{ editing ? <i className='fa-solid fa-check userButtons' /> : <i className='fa-solid fa-pen-to-square userButtons' />}</div>
+                <div className='userElements small' onClick={() => editing ? setEditing(false) : setPopup(true)}>{editing ? <i className='fa-solid fa-x userButtons' /> : <i className='fa-solid fa-trash-can userButtons' />}</div>
             </>);
         }
     }
@@ -70,10 +75,10 @@ function User({user, index, currentUser}: Props) {
         <>
         <li className='userRow'>
             <div className='small userElements'>{index + 1}</div>
-            <div className='large userElements'>{user.ime + ' ' + user.prezime}</div>
-            <div className='large userElements'>{user.email}</div>
+            <div className='large userElements'>{editing ? <input type='text' value={name} className='form-control' onChange={(event) => setName(event.target.value)} /> : user.name}</div>
+            <div className='large userElements'>{editing ? <input type='email' value={email} className='form-control' onChange={(event) => setEmail(event.target.value)} /> : user.email}</div>
             <div className='medium userElements'>
-                {editRole ? <Dropdown userRole={user.role} setRoleFunction={(role: string) => setRole(role)}/> : user.role}
+                {editing ? <Dropdown userRole={user.role} setRoleFunction={(role: string) => setRole(role)}/> : user.role}
             </div>
             <div className='userElements medium'>{dateToString(user.lastActive)}</div>
             {isUserAdmin()}

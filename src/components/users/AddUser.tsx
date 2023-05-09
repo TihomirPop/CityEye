@@ -1,19 +1,18 @@
-import { BaseSyntheticEvent, useState } from "react";
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { db } from "../../config/Firebase";
+import { BaseSyntheticEvent, useState } from 'react';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { db } from '../../config/Firebase';
 import '../../styles/Users.css'
-import { WebUser } from "./User";
+import { WebUser } from './User';
 
 interface Props{
   currentUser: WebUser;
 }
 
 function AddUser({currentUser}: Props) {
-  const [email, setEmail] = useState("");
-  const [ime, setIme] = useState("");
-  const [prezime, setPrezime] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
   const [addingUser, setAddingUser] = useState(false);
 
   const functions = getFunctions();
@@ -29,16 +28,14 @@ function AddUser({currentUser}: Props) {
       await setDoc(doc(db, 'webUsers', data.user.uid), {
         email: data.user.email,
         role: 'user',
-        ime: ime,
-        prezime: prezime,
+        name: name,
         lastActive: serverTimestamp(),
         city: currentUser.city
       });
       console.log('User created:', data.user);
       
       setEmail('');
-      setIme('');
-      setPrezime('');
+      setName('');
       setPassword('');
       setAddingUser(false);
     }
@@ -50,7 +47,7 @@ function AddUser({currentUser}: Props) {
 
   return (
     <>
-      <button className="btn btn-primary" onClick={() => setAddingUser(true)}>Add User</button>
+      <button className='btn btn-primary' onClick={() => setAddingUser(true)}>Add User</button>
       { addingUser ?
       <>
         <div id='addUserGrayedOut' onClick={() => setAddingUser(false)} />
@@ -58,25 +55,20 @@ function AddUser({currentUser}: Props) {
           <form onSubmit={handleAddWebUser}>
           <label>
             Email:
-            <input type="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} />
+            <input type='email' className='form-control' value={email} onChange={(event) => setEmail(event.target.value)} />
           </label>
           <br />
           <label>
-            Ime:
-            <input type="text" className="form-control" value={ime} onChange={(event) => setIme(event.target.value)} />
-          </label>
-          <br />
-          <label>
-            Prezime:
-            <input type="text" className="form-control" value={prezime} onChange={(event) => setPrezime(event.target.value)} />
+            Name:
+            <input type='text' className='form-control' value={name} onChange={(event) => setName(event.target.value)} />
           </label>
           <br />
           <label>
             Password:
-            <input type="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} />
+            <input type='password' className='form-control' value={password} onChange={(event) => setPassword(event.target.value)} />
           </label>
           <br />
-          <button id="createUserButton" className="btn btn-primary" type="submit">Create User</button>
+          <button id='createUserButton' className='btn btn-primary' type='submit'>Create User</button>
           </form>
           </div>
       </> : null }

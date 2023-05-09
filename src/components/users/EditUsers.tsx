@@ -19,8 +19,7 @@ function EditUsers({currentUser}: Props) {
             const userList: WebUser[] = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 email: doc.data().email,
-                ime: doc.data().ime,
-                prezime: doc.data().prezime,
+                name: doc.data().name,
                 lastActive: doc.data().lastActive ? doc.data().lastActive.toDate() : new Date(),
                 role: doc.data().role,
                 city: doc.data().city
