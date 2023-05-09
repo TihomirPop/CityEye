@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { BaseSyntheticEvent, useState } from 'react';
 import 'firebase/firestore';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '../../config/Firebase';
+import { addDoc, collection, updateDoc } from 'firebase/firestore';
+import { db, storage } from '../../config/Firebase';
 import { WebUser } from '../users/User';
+import { ref, uploadBytes } from 'firebase/storage';
 
 interface Props{
   currentUser: WebUser;
@@ -13,38 +14,47 @@ const AddEvent = ({currentUser}: Props) => {
   const [description, setDescription] = useState('');
   const [epochStart, setEpochStart] = useState('');
   const [epochEnd, setEpochEnd] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
   const [location, setLocation] = useState('');
   const [locationAddress, setLocationAddress] = useState('');
   const [price, setPrice] = useState(0);
+  const [image, setImage] = useState<File | null>(null);
 
-  const handleAddNotification = async (e: any) => {
+  const handleAddEvent = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
 
-    await addDoc(collection(db, "events"), {
-      title: title,
-      description: description,
-      epochStart: (new Date(epochStart)).getTime() / 1000,
-      epochEnd: (new Date(epochEnd)).getTime() / 1000,
-      imageUrl: imageUrl,
-      city: currentUser.city,
-      location: location,
-      locationAddress: locationAddress,
-      price: price
-    });
-
-    setTitle('');
-    setDescription('');
-    setEpochStart('');
-    setEpochEnd('')
-    setImageUrl('');
-    setLocation('');
-    setLocationAddress('');
-    setPrice(0);
+    if(image){
+      const docRef = await addDoc(collection(db, "events"), {
+        title: title,
+        description: description,
+        epochStart: (new Date(epochStart)).getTime() / 1000,
+        epochEnd: (new Date(epochEnd)).getTime() / 1000,
+        imageUrl: null,
+        city: currentUser.city,
+        location: location,
+        locationAddress: locationAddress,
+        price: price
+      });
+  
+      const imageUrl = `eventImages/${image.name}-${docRef.id}`;
+      uploadBytes(ref(storage, imageUrl), image)
+        .then(() => console.log('image uploaded'))
+        .catch(() => console.error('image upload error'));
+      
+      updateDoc(docRef, {imageUrl: imageUrl});
+      
+      setTitle('');
+      setDescription('');
+      setEpochStart('');
+      setEpochEnd('')
+      setImage(null);
+      setLocation('');
+      setLocationAddress('');
+      setPrice(0);
+    }
   };
 
   return (
-    <form onSubmit={handleAddNotification}>
+    <form onSubmit={handleAddEvent}>
       <div>
         <label htmlFor="title">Title</label>
         <br />
@@ -93,13 +103,13 @@ const AddEvent = ({currentUser}: Props) => {
       </div>
       <br />
       <div>
-        <label htmlFor="imageUrl">Image URL</label>
+        <label htmlFor="image">Image URL</label>
         <br />
         <input
-          type="url"
-          id="imageUrl"
-          value={imageUrl}
-          onChange={(event) => setImageUrl(event.target.value)}
+          type="file"
+          accept="image/*"
+          id="image"
+          onChange={(event) => setImage(event.target.files ? event.target.files[0] : null)}
           required
         />
       </div>
