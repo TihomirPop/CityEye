@@ -67,9 +67,9 @@ function Problem({problem, selectProblem}: Props) {
             <>
                 <Image img={problem.imageName} className='card__img' />
                 <div className="card__content">
-                    <h1 className="card__header" onClick={() => selectProblem(problem)}>{problem.title}</h1>
-                    <p className="card__date">{problem.imageName.substr(5, 19).replace('_', ' ')}</p>
-                    <p className="card__text">{problem.description}</p>
+                    <h1 className="card__header" onClick={() => selectProblem(problem)}>{problem.title.length > 15 ? problem.title.substring(0, 15) + '...' : problem.title}</h1>
+                    <p className="card__date">{problem.imageName.substring(5, 24).replace('_', ' ')}</p>
+                    <p className="card__text">{problem.description.length > 100 ? problem.description.substring(0, 100) + '...' : problem.description}</p>
                     { problem.solved ? <p>{odgovor}</p> :
                     <>
                         <input type="text" className="form-control" onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
