@@ -2,27 +2,23 @@ import { BaseSyntheticEvent, useEffect, useMemo, useState } from 'react';
 import { GoogleMap, MarkerF, InfoWindowF} from "@react-google-maps/api";
 import { collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import { db } from '../../config/Firebase';
-
 import CarCharger from '../assets/car-charger.png';
 import MobileCharger from '../assets/mobile-charger.png';
+import AreYouSure from '../confirmation/AreYouSure';
+import Marker, { MarkerInterface } from './Marker';
 
-type LatLngLiteral = google.maps.LatLngLiteral;
-
-interface Marker {
-    latLng: LatLngLiteral,
-    type: string,
-    id: string
-    address: string
-}
 
 const MarkerMap = () => {
-    const [markers, setMarkers] = useState<Marker[]>([]);
-    const [selectedMarker, setSelectedMarker] = useState<Marker | null>(null);
-    const [selectedOption, setSelectedOption] = useState("autoPunjac")
+    const [markers, setMarkers] = useState<MarkerInterface[]>([]);
+    const [selectedMarker, setSelectedMarker] = useState<MarkerInterface | null>(null);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
+    const [selectedOption, setSelectedOption] = useState('autoPunjac');
+    const [popup, setPopup] = useState(false);
+    const [addingMarker, setAddingMarker] = useState(false);
 
     useEffect(() => {
         getDocs(collection(db, 'markers')).then((results) => {
-            const markersList: Marker[] = results.docs.map((doc: any) => ({
+            const markersList: MarkerInterface[] = results.docs.map((doc: any) => ({
                 id: doc.id,
                 type: doc.data().type,
                 address: doc.data().address,
@@ -33,14 +29,16 @@ const MarkerMap = () => {
     }, []);
     
     const addMarker = async (e: google.maps.MapMouseEvent) => {
-        if(e.latLng){
+        if(e.latLng && addingMarker){
             const lat = e.latLng.lat();
             const lng = e.latLng.lng();
+
+            setAddingMarker(false);
 
             fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyCUY11RGhx0bJVxMRphkwgtBbxobSDtDTo`)
                 .then(response => response.json())
                 .then(data => {
-                    const newMarker: Marker = {latLng: {lat: lat, lng: lng}, type: selectedOption, id: (lat.toString() + lng.toString()), address: data.results[0].formatted_address};
+                    const newMarker: MarkerInterface = {latLng: {lat: lat, lng: lng}, type: selectedOption, id: (lat.toString() + lng.toString()), address: data.results[0].formatted_address};
                 
                     setMarkers([...markers, newMarker]);
                     setDoc(doc(db, 'markers', newMarker.id), {
@@ -57,9 +55,13 @@ const MarkerMap = () => {
     const removeMarker = async (index: number, id: string) => {
         setMarkers(markers.filter((_, i) => index != i));
         deleteDoc(doc(db, 'markers', id));
+        setSelectedMarker(null);
+        setSelectedIndex(-1);
+        setPopup(false);
     } 
 
-    const handleMarkerClick = (marker: Marker) => {
+    const handleMarkerClick = (index: number, marker: MarkerInterface) => {
+        setSelectedIndex(index);
         setSelectedMarker(marker);
     }
     
@@ -111,6 +113,8 @@ const MarkerMap = () => {
                 Solarna klupa
             </label>
         </div>
+        <button onClick={() => setAddingMarker(true)}>Add marker</button>
+        <p>{addingMarker ? 'click anywhere on the map to add a marker' : <span>&nbsp;</span>}</p>
 
         <GoogleMap
         id="marker-example"
@@ -119,16 +123,26 @@ const MarkerMap = () => {
         center={center}
         onClick={addMarker}
         options={{ styles: [{elementType: 'labels', featureType: 'poi', stylers: [{ visibility: 'off', }],}],}}>
-        {markers.map((marker: Marker, index) => (
-            <MarkerF key={marker.id} position={marker.latLng} animation={google.maps.Animation.DROP} icon={mapMarkerIcon(marker.type)} onRightClick={() => removeMarker(index, marker.id)} onClick={() => handleMarkerClick(marker)}> 
+        {markers.map((marker: MarkerInterface, index) => (
+            <MarkerF key={marker.id} position={marker.latLng} animation={google.maps.Animation.DROP} icon={mapMarkerIcon(marker.type)}  onClick={() => handleMarkerClick(index, marker)}> 
                 {selectedMarker == marker && (
                     <InfoWindowF onCloseClick={handleInfoWindowClose}>
-                        <div>{marker.address}</div>
+                        <div>
+                            <p>{marker.address}</p>
+                            <i onClick={() => setPopup(true)} className='fa-solid fa-trash-can userButtons' style={{position: 'relative', left: '50%', transform: 'translate(-50%, 0)'}} />
+                        </div>
                     </InfoWindowF>
                 )}
             </MarkerF>
         ))}
         </GoogleMap>
+        { popup && <AreYouSure onYes={() => selectedMarker ? removeMarker(selectedIndex, selectedMarker.id) : null} onNo={() => setPopup(false)} /> }
+
+        <ul>
+            {
+                markers.map((marker: MarkerInterface, index) => (<Marker marker={marker} index={index} removeMarker={removeMarker} key={marker.id} />))
+            }
+        </ul>
         </>
     );
 };
