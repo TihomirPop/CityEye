@@ -35,8 +35,8 @@ const AddEvent = ({currentUser}: Props) => {
         price: price
       });
   
-      const imageUrl = `eventImages/${docRef.id}-${image.name}`;
-      uploadBytes(ref(storage, imageUrl), image)
+      const imageUrl = `${docRef.id}-${image.name}`;
+      uploadBytes(ref(storage, `eventImages/${imageUrl}`), image)
         .then(() => console.log('image uploaded'))
         .catch(() => console.error('image upload error'));
       

@@ -142,7 +142,7 @@ const ProblemsList = () => {
       {
         screen == 'problems' ?
         <>
-        <input type="text" className="form-control" id='problemListSearchBar' onChange={(e: BaseSyntheticEvent) => setSearch(e.target.value)} />
+        <input type="text" placeholder='Search...' className="form-control" id='problemListSearchBar' onChange={(e: BaseSyntheticEvent) => setSearch(e.target.value)} />
         <div className="grid">
           {filteredProblems.slice((page - 1) * 20, page * 20).map((problem: ProblemInterface) => (
             <Problem problem={problem} key={problem.answerID ? problem.id + problem.answerID : problem.id} selectProblem={selectProblem} />
