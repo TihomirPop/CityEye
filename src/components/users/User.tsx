@@ -1,10 +1,10 @@
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import '../../styles/Users.css'
 import  { useState } from 'react';
-//import { getFunctions, httpsCallable } from 'firebase/functions';
 import { db } from '../../config/Firebase';
 import Dropdown from './Dropdown';
 import AreYouSure from '../confirmation/AreYouSure';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 export interface WebUser{
     id: string;
@@ -27,7 +27,8 @@ function User({user, index, currentUser}: Props) {
     const [editRole, setEditRole] = useState(false);
     const [role, setRole] = useState('');
 
-    //const deleteUserFunction = httpsCallable(getFunctions(), 'deleteUser');
+    const functions = getFunctions();
+    const deleteWebUser = httpsCallable(functions, 'deleteWebUser');
 
     const dateToString = (date: Date) => {
         const myDate = date;
@@ -38,9 +39,8 @@ function User({user, index, currentUser}: Props) {
     }
 
     const deleteUser = () => {
-        /*deleteUserFunction({uid: user.id})
-            .then(result => { console.log(result.data); })
-            .catch(error => { console.error(error); });*/
+        console.log('deleting user: ' + user.email + ' - ' + user.id);
+        deleteWebUser({id: user.id});
         deleteDoc(doc(db, 'webUsers', user.id));
         setPopup(false);
     }
