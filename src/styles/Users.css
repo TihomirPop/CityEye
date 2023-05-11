@@ -42,13 +42,13 @@
     border-right: 1px solid #CED4DA;
 }
 
-.small{
+.smallUser{
     width: 45px;
 }
-.medium{
+.mediumUser{
     width: 100px;
 }
-.large{
+.largeUser{
     width: 300px;
 }
 .pointerOnHover:hover{

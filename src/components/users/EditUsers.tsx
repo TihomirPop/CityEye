@@ -35,16 +35,16 @@ function EditUsers({currentUser}: Props) {
             <AddUser currentUser={currentUser} />
             <ul>
                 <li className="userRow header" key="pocetak">
-                    <div className="small userElements">#</div>
-                    <div className="large userElements">Name</div>
-                    <div className="large userElements">E-mail</div>
-                    <div className="medium userElements">Role</div>
-                    <div className="userElements medium">Last active</div>
+                    <div className="smallUser userElements">#</div>
+                    <div className="largeUser userElements">Name</div>
+                    <div className="largeUser userElements">E-mail</div>
+                    <div className="mediumUser userElements">Role</div>
+                    <div className="userElements mediumUser">Last active</div>
                     {
                         currentUser.role == 'admin' &&
                         <>
-                        <div className="userElements small"></div>
-                        <div className="userElements small"></div>
+                        <div className="userElements smallUser"></div>
+                        <div className="userElements smallUser"></div>
                         </>
                     }
                 </li>
