@@ -8,6 +8,7 @@ import Image from './Image';
 import ProblemsMap from './ProblemsMap';
 
 import LoadingGif from '../assets/loading.gif';
+import ProblemsDropdown from './ProblemsDropdown';
 
 const ProblemsList = () => {
   const [problems, setProblems] = useState<ProblemInterface[]>([]);
@@ -15,14 +16,13 @@ const ProblemsList = () => {
   const [selectedProblem, setSelectedProblem] = useState<ProblemInterface | null>(null);
   const [answer, setAnswer] = useState('');
   const [odgovor, setOdgovor] = useState<any>(null);
-  const [solvedIsChecked, setSolvedIsChecked] = useState(false);
-  const [notSolvedIsChecked, setNotSolvedIsChecked] = useState(true);
   const [search, setSearch] = useState('');
   const [screen, setScreen] = useState('problems');
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState('');
   const [sendingAnswer, setSendingAnswer] = useState(false);
+  const [selectedProblemType, setSelectedProblemType] = useState('Not solved problems');
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'problems'), (snapshot) => {
@@ -47,7 +47,7 @@ const ProblemsList = () => {
 
   useEffect(() => {
     filter();
-  }, [search, solvedIsChecked, notSolvedIsChecked]);
+  }, [search, selectedProblemType]);
 
   useEffect(() => {
     setPage(1);
@@ -55,14 +55,14 @@ const ProblemsList = () => {
   }, [filteredProblems]);
 
   const filterFunction = (problem: any) => {
-    if(solvedIsChecked && notSolvedIsChecked)
-      return true;
-    else if(notSolvedIsChecked)
-      return !problem.solved;
-    else if(solvedIsChecked)
-      return problem.solved;
-    else
-      return false;
+    switch (selectedProblemType) {
+      case 'Not solved problems':
+        return !problem.solved;
+      case 'Solved problems':
+        return problem.solved;
+      case 'All problems':
+        return true;
+    }
   }
 
   const filter = () => {
@@ -93,7 +93,7 @@ const ProblemsList = () => {
   }
 
   const odgovori = async () => {
-    if(answer.length > 3 && answer.length <= 100 && selectedProblem){
+    if(answer.length > 3 && answer.length <= 300 && selectedProblem){
       addDoc(collection(db, 'answers'), {
         problemID: selectedProblem.id,
         response: answer,
@@ -102,14 +102,6 @@ const ProblemsList = () => {
       });
       setSendingAnswer(true);
     }
-  }
-
-  const changeSolvedIsChecked = () => {
-    setSolvedIsChecked((checked) => !checked);
-  }
-
-  const changeNotSolvedIsChecked = () => {
-    setNotSolvedIsChecked((checked) => !checked);
   }
 
   const pageBack = () => {
@@ -123,31 +115,25 @@ const ProblemsList = () => {
 
   return (
     <div>
-      <button onClick={() => {setSearch(''); setScreen('problems');}}>Problems</button>
-      <button onClick={() => {setSearch(''); setScreen('map');}}>Map</button>
-      <label>
-        <input
-          type="checkbox"
-          key={solvedIsChecked.toString()}
-          checked={solvedIsChecked}
-          onChange={() => changeSolvedIsChecked()}
-        />
-        Solved problems
-      </label>
-      <label>
-        <input
-          type="checkbox"
-          key={notSolvedIsChecked.toString()}
-          checked={notSolvedIsChecked}
-          onChange={() => changeNotSolvedIsChecked()}
-        />
-        Not solved problems
-      </label>
+      <div className='problemsTabs'>
+        <div className='problemsTabWrapper'>
+          <button className='problemsTabButton' onClick={() => {setSearch(''); setScreen('problems');}}>Problems</button>
+          {screen == 'problems' && <div className='problemsTabBorder' />}
+        </div>
+        <div className='problemsTabWrapper'>
+          <button className='problemsTabButton' onClick={() => {setSearch(''); setScreen('map');}}>Map</button>
+          {screen == 'map' && <div className='problemsTabBorder' />}
+        </div>
+      </div>
 
       {
         screen == 'problems' ?
         <>
-        <input type="text" placeholder='Search...' className="form-control" id='problemListSearchBar' onChange={(e: BaseSyntheticEvent) => setSearch(e.target.value)} />
+        <div className='problemsFilters'>
+          <input type="text" placeholder='Search...' className="form-control" id='problemListSearchBar' onChange={(e: BaseSyntheticEvent) => setSearch(e.target.value)} />
+          <ProblemsDropdown selectedProblems={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />
+        </div>
+
         <div className="grid">
           {filteredProblems.slice((page - 1) * 15, page * 15).map((problem: ProblemInterface) => (
             <Problem problem={problem} key={problem.answerID ? problem.id + problem.answerID : problem.id} selectProblem={selectProblem} />
@@ -179,7 +165,7 @@ const ProblemsList = () => {
                     {
                       selectedProblem.solved ? <p>{odgovor}</p> :
                       <>
-                        <textarea className="form-control" rows={3} onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
+                        <textarea placeholder='Answer...' className="form-control" rows={3} onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
                         <button className="card__btn" onClick={odgovori} >Odgovori <span>&rarr;</span></button>
                       </>
                     }

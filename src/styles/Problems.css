@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Readex+Pro&display=swap');
+
 .grid {
     display: flex;
     justify-content: space-evenly;
@@ -76,10 +78,7 @@
   width: 90%;
   height: 400px;
 }
-#problemListSearchBar{
-  width: 500px;
-  margin: 20px auto;
-}
+
 .card__sending{
   display: block;
   height: 100%;
@@ -184,4 +183,79 @@
   height: 100%;
   max-width: 100%;
   object-fit: contain;
+}
+
+.problemsTabs{
+  display: flex;
+}
+.problemsTabWrapper{
+  display: flex;
+  flex-direction: column;
+  margin: 30px 30px 0 30px;
+}
+.problemsTabButton{
+  color: #0D6EFD;
+  font-family: 'Readex Pro', sans-serif;
+  border: none;
+  padding: 0 10px;
+  margin-bottom: 10px;
+}
+.problemsTabBorder{
+  border-radius: 3px 3px 0 0;
+  border-top: 3px solid #0D6EFD;
+}
+
+.problemsFilters{
+  display: flex;
+  justify-content: center;
+}
+#problemListSearchBar{
+  max-width: 500px;
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+.problem-dropdown {
+  position: relative;
+  border: none;
+  margin-bottom: 20px;
+  margin-left: 20px;
+}
+.problem-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 1;
+  background-color: white;
+}
+.problem-dropdown button{
+  width: 200px;
+  border: 1px solid #CED4DA;
+  padding: 6px;
+  border-radius: 6px;
+  background-color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.problem-dropdown p {
+  margin: 0;
+}
+.problem-dropdown-menu:hover {
+  cursor: pointer;
+}
+.problem-dropdown-element{
+  border: 1px solid #CED4DA;
+  border-top: none;
+}
+.problem-dropdown-element:hover{
+  background-color: #DDD;
+  transition-duration: 200ms;
+}
+.problem-dropdown-first-element{
+  height: 5px;
+  margin-top: -5px;
+  border-left: 1px solid #CED4DA;
+  border-right: 1px solid #CED4DA;
 }

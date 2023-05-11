@@ -49,7 +49,7 @@ function Problem({problem, selectProblem}: Props) {
     }
     
     const odgovori = async () => {
-        if(answer.length > 3 && answer.length <= 100){
+        if(answer.length > 3 && answer.length <= 300){
             addDoc(collection(db, 'answers'), {
                 problemID: problem.id,
                 response: answer,
@@ -70,9 +70,9 @@ function Problem({problem, selectProblem}: Props) {
                     <h1 className="card__header" onClick={() => selectProblem(problem)}>{problem.title.length > 15 ? problem.title.substring(0, 15) + '...' : problem.title}</h1>
                     <p className="card__date">{problem.imageName.substring(5, 24).replace('_', ' ')}</p>
                     <p className="card__text">{problem.description.length > 100 ? problem.description.substring(0, 100) + '...' : problem.description}</p>
-                    { problem.solved ? <p>{odgovor}</p> :
+                    { problem.solved ? <p>{odgovor && odgovor.length > 80 ? odgovor.substring(0, 80) + '...' : odgovor}</p> :
                     <>
-                        <input type="text" className="form-control" onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
+                        <input placeholder='Answer...' type="text" className="form-control" onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
                         <button className="card__btn" onClick={odgovori}>Odgovori <span>&rarr;</span></button>
                     </>
                     }
