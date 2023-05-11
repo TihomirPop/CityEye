@@ -2,11 +2,12 @@ import { BaseSyntheticEvent, useEffect, useMemo, useState } from 'react';
 import { GoogleMap, MarkerF, InfoWindowF} from "@react-google-maps/api";
 import { collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import { db } from '../../config/Firebase';
-import CarCharger from '../assets/car-charger.png';
-import MobileCharger from '../assets/mobile-charger.png';
 import AreYouSure from '../confirmation/AreYouSure';
 import Marker, { MarkerInterface } from './Marker';
+import '../../styles/Marker.css'
 
+import EVCharger from '../assets/car-charger.png';
+import MobileCharger from '../assets/mobile-charger.png';
 
 const MarkerMap = () => {
     const [markers, setMarkers] = useState<MarkerInterface[]>([]);
@@ -76,7 +77,7 @@ const MarkerMap = () => {
     const mapMarkerIcon = (type: string) => {
         switch(type) {
             case 'autoPunjac':
-                return CarCharger;
+                return EVCharger;
             case 'solarnaKlupa':
                 return MobileCharger;
         }
@@ -84,8 +85,8 @@ const MarkerMap = () => {
 
     const mapContainerStyle = {
         height: "600px",
-        width: "95%",
-        margin: "20px auto"
+        width: "calc(100% - 60px)",
+        margin: "30px auto"
     }
       
     const center = useMemo(() => ({lat: 45.811225, lng: 15.979138}), []);
@@ -100,7 +101,7 @@ const MarkerMap = () => {
                 checked={selectedOption == 'autoPunjac'}
                 onChange={handleOptionChange}
                 />
-                Punjač za električna vozila
+                EV Charger
             </label>
             <br />
             <label>
@@ -110,19 +111,19 @@ const MarkerMap = () => {
                 checked={selectedOption == 'solarnaKlupa'}
                 onChange={handleOptionChange}
                 />
-                Solarna klupa
+                Solar Bench
             </label>
         </div>
         <button onClick={() => setAddingMarker(true)}>Add marker</button>
         <p>{addingMarker ? 'click anywhere on the map to add a marker' : <span>&nbsp;</span>}</p>
 
         <GoogleMap
-        id="marker-example"
+        id="markerMap"
         mapContainerStyle={mapContainerStyle}
         zoom={13}
         center={center}
         onClick={addMarker}
-        options={{ styles: [{elementType: 'labels', featureType: 'poi', stylers: [{ visibility: 'off', }],}],}}>
+        options={{ styles: [{elementType: 'labels', featureType: 'poi', stylers: [{ visibility: 'off', }],}], fullscreenControl: false, streetViewControl: false}}>
         {markers.map((marker: MarkerInterface, index) => (
             <MarkerF key={marker.id} position={marker.latLng} animation={google.maps.Animation.DROP} icon={mapMarkerIcon(marker.type)}  onClick={() => handleMarkerClick(index, marker)}> 
                 {selectedMarker == marker && (
@@ -138,7 +139,13 @@ const MarkerMap = () => {
         </GoogleMap>
         { popup && <AreYouSure onYes={() => selectedMarker ? removeMarker(selectedIndex, selectedMarker.id) : null} onNo={() => setPopup(false)} /> }
 
-        <ul>
+        <ul className='markerList'>
+            <li className='markerRow header'>
+                <div className='markerElement small'>#</div>
+                <div className='markerElement medium'>Type</div>
+                <div className='markerElement large'>Address</div>
+                <div className='markerElement small' />
+            </li>
             {
                 markers.map((marker: MarkerInterface, index) => (<Marker marker={marker} index={index} removeMarker={removeMarker} key={marker.id} />))
             }

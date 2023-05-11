@@ -1,5 +1,6 @@
 import  { useState } from 'react';
 import AreYouSure from '../confirmation/AreYouSure';
+import '../../styles/Marker.css'
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 
@@ -24,13 +25,22 @@ function Marker({marker, index, removeMarker}: Props) {
         setPopup(false);
     }
 
+    const getMarkerName = () => {
+        switch (marker.type) {
+            case 'solarnaKlupa':
+                return 'Solar Bench';
+            case 'autoPunjac':
+                return 'EV Charger';
+        }
+    }
+
     return (
         <>
-        <li className='markerRow' style={{display: 'flex', justifyContent: 'space-between'}}>
-            <div>{index + 1}.</div>
-            <div>{marker.type}</div>
-            <div>{marker.address}</div>
-            <div>{<i onClick={() => setPopup(true)} className='fa-solid fa-trash-can userButtons' />}</div>
+        <li className='markerRow'>
+            <div className='markerElement small'>{index + 1}.</div>
+            <div className='markerElement medium'>{getMarkerName() ? getMarkerName() : marker.type}</div>
+            <div className='markerElement large'>{marker.address}</div>
+            <div className='markerElement small'>{<i onClick={() => setPopup(true)} className='fa-solid fa-trash-can userButtons' />}</div>
         </li>
         { popup ? <AreYouSure onYes={deleteMarker} onNo={() => setPopup(false)} /> : null }
         </>

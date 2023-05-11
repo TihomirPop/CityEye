@@ -1,0 +1,32 @@
+.markerList{
+    margin: 30px;
+    border-left: 30px solid white;
+    border-right: 30px solid white;
+    padding: 0;
+    border-radius: 15px;
+}
+.markerRow{
+    display: flex;
+    background-color: white;
+    margin-top: 5px;
+    justify-content: space-between;
+}
+.markerRow.header{
+    margin-top: 0;
+    color: #64748B;
+}
+.markerElement{
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.small{
+    width: 45px;
+}
+.medium{
+    width: 150px;
+}
+.large{
+    width: 500px;
+}
