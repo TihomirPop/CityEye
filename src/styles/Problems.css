@@ -123,3 +123,34 @@
   height: 45%;
   text-align: center;
 }
+#pages{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  font-size: 20px;
+}
+#pages button{
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  margin: 30px;
+  border: 0;
+}
+.pageButtonOn{
+  background-color: white;
+}
+.pageButtonOn:hover{
+  background-color: #ddd;
+  transition-duration: 200ms;
+}
+.pageButtonOff{
+  background-color: white;
+  color: #ddd;
+}
+.pageButtonOff:hover{
+  cursor: default;
+}
+#noProblemsParagraph{
+  color: #64748B;
+}

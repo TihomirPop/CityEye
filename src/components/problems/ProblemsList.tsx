@@ -45,7 +45,7 @@ const ProblemsList = () => {
 
   useEffect(() => {
     setPage(1);
-    setMaxPage(Math.ceil(filteredProblems.length / 20));
+    setMaxPage(Math.ceil(filteredProblems.length / 15));
   }, [filteredProblems]);
 
   const filterFunction = (problem: any) => {
@@ -111,9 +111,11 @@ const ProblemsList = () => {
 
   const pageBack = () => {
     setPage((page) => page - 1);
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
   }
   const pageForward = () => {
     setPage((page) => page + 1);
+    window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
   }
 
   return (
@@ -144,14 +146,19 @@ const ProblemsList = () => {
         <>
         <input type="text" placeholder='Search...' className="form-control" id='problemListSearchBar' onChange={(e: BaseSyntheticEvent) => setSearch(e.target.value)} />
         <div className="grid">
-          {filteredProblems.slice((page - 1) * 20, page * 20).map((problem: ProblemInterface) => (
+          {filteredProblems.slice((page - 1) * 15, page * 15).map((problem: ProblemInterface) => (
             <Problem problem={problem} key={problem.answerID ? problem.id + problem.answerID : problem.id} selectProblem={selectProblem} />
           ))}
         </div>
-        <div>
-          {page != 1 && <button onClick={() => pageBack()}>{'<'}</button>}
-          {page + '/' + maxPage}
-          {page < maxPage && <button onClick={() => pageForward()}>{'>'}</button>}
+        <div id='pages'>
+          {
+            maxPage == 0 ? <p id='noProblemsParagraph'>No problems...</p> :
+            <>
+              {page != 1 ? <button className='pageButtonOn' onClick={() => pageBack()}><i className="fa-solid fa-arrow-left" /></button> : <button className='pageButtonOff'><i className="fa-solid fa-arrow-left" /></button>}
+              {page + '/' + maxPage}
+              {page < maxPage ? <button className='pageButtonOn' onClick={() => pageForward()}><i className="fa-solid fa-arrow-right" /></button> : <button className='pageButtonOff'><i className="fa-solid fa-arrow-right" /></button>}
+            </>
+          }
         </div>
         {
           selectedProblem != null ?

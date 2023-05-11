@@ -9,7 +9,7 @@ interface Props{
 
 const ProblemsMap = ({problems}: Props) => {
   const getHeadmapData = () => {
-    return problems.filter((problem: ProblemInterface) => (problem.address.split(',')[2]).trim() === 'Zagreb').map((problem) => new google.maps.LatLng(parseFloat(problem.location_lat), parseFloat(problem.location_lon)));
+    return problems.map((problem) => new google.maps.LatLng(parseFloat(problem.location_lat), parseFloat(problem.location_lon)));
   };
 
   const mapContainerStyle = {
@@ -27,7 +27,7 @@ const ProblemsMap = ({problems}: Props) => {
   zoom={13}
   center={center}
   options={{ styles: [{elementType: 'labels', featureType: 'poi', stylers: [{ visibility: 'off', }],}],}}>
-    <HeatmapLayerF data={getHeadmapData()} options={{radius: 25, dissipating: true}}/>
+    <HeatmapLayerF data={getHeadmapData()} options={{radius: 40, dissipating: true}}/>
   </GoogleMap>
   );
 };
