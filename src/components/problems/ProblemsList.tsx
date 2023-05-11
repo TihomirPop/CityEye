@@ -7,6 +7,8 @@ import Problem, { ProblemInterface } from './Problem';
 import Image from './Image';
 import ProblemsMap from './ProblemsMap';
 
+import LoadingGif from '../assets/loading.gif';
+
 const ProblemsList = () => {
   const [problems, setProblems] = useState<ProblemInterface[]>([]);
   const [filteredProblems, setFilteredProblems] = useState<ProblemInterface[]>([]);
@@ -19,6 +21,8 @@ const ProblemsList = () => {
   const [screen, setScreen] = useState('problems');
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
+  const [selectedImage, setSelectedImage] = useState('');
+  const [sendingAnswer, setSendingAnswer] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'problems'), (snapshot) => {
@@ -37,6 +41,8 @@ const ProblemsList = () => {
 
   useEffect(() => {
     setFilteredProblems(problems.filter(filterFunction));
+    setSelectedProblem(null);
+    setSendingAnswer(false);
   }, [problems]);
 
   useEffect(() => {
@@ -94,10 +100,7 @@ const ProblemsList = () => {
         timeOfResponse: dateToString(new Date()),
         userID: selectedProblem.uid
       });
-      updateDoc(doc(db, 'problems', selectedProblem.id), {
-        solved: true
-      });
-      setSelectedProblem(null);
+      setSendingAnswer(true);
     }
   }
 
@@ -163,23 +166,34 @@ const ProblemsList = () => {
         {
           selectedProblem != null ?
           <>
-            <div id='grayedOut' onClick={unselectProblem} />
+            <div id='grayedOut' onClick={sendingAnswer ? void 0 : unselectProblem} />
             <div id='popup'>
-              <Image img={selectedProblem.imageName} className='popupImage'/>
-              <div className="popupContent">
-                <h1 className="card__header">{selectedProblem.title}</h1>
-                <p className="card__date">{selectedProblem.imageName.substring(5, 24).replace('_', ' ')}</p>
-                <p className="card__text">{selectedProblem.description}</p>
-                {
-                  selectedProblem.solved ? <p>{odgovor}</p> :
-                  <>
-                    <textarea className="form-control" rows={3} onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
-                    <button className="card__btn" onClick={odgovori} >Odgovori <span>&rarr;</span></button>
-                  </>
-                }
-                
-              </div>
+              {
+                sendingAnswer ? <img src={LoadingGif} className='popupSendingGif' /> :
+                <>
+                  <Image onClick={() => setSelectedImage(selectedProblem.imageName)} img={selectedProblem.imageName} className='popupImage'/>
+                  <div className="popupContent">
+                    <h1 className="card__header">{selectedProblem.title}</h1>
+                    <p className="card__date">{selectedProblem.imageName.substring(5, 24).replace('_', ' ')}</p>
+                    <p className="card__text">{selectedProblem.description}</p>
+                    {
+                      selectedProblem.solved ? <p>{odgovor}</p> :
+                      <>
+                        <textarea className="form-control" rows={3} onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
+                        <button className="card__btn" onClick={odgovori} >Odgovori <span>&rarr;</span></button>
+                      </>
+                    }
+                  </div>
+                </>
+              }
             </div>
+            {
+              selectedImage.length > 0 &&
+              <>
+                <div id='imageBackground' onClick={() => setSelectedImage('')} />
+                <Image onClick={() => void 0} img={selectedImage} className='bigImage' />
+              </>
+            }
           </> : null
         }
         </> :

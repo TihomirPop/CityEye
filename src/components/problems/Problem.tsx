@@ -65,7 +65,7 @@ function Problem({problem, selectProblem}: Props) {
         {
             sendingAnswer ? <img className='card__sending' alt='sending...' src={LoadingGif} /> :
             <>
-                <Image img={problem.imageName} className='card__img' />
+                <Image onClick={() => selectProblem(problem)} img={problem.imageName} className='card__img' />
                 <div className="card__content">
                     <h1 className="card__header" onClick={() => selectProblem(problem)}>{problem.title.length > 15 ? problem.title.substring(0, 15) + '...' : problem.title}</h1>
                     <p className="card__date">{problem.imageName.substring(5, 24).replace('_', ' ')}</p>

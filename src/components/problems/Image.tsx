@@ -8,9 +8,10 @@ import LoadingGif from '../assets/loading.gif';
 interface Props{
     img: string;
     className: string;
+    onClick: () => void;
 }
 
-function Image({img, className}: Props) {
+function Image({img, className, onClick}: Props) {
     const [imageUrl, setImageUrl] = useState("");
 
     useEffect(() => {
@@ -20,7 +21,7 @@ function Image({img, className}: Props) {
     }, [img]);
 
     return (
-        <img className={className} alt={imageUrl} src={imageUrl.length > 0 ? imageUrl : LoadingGif} />
+        <img onClick={() => onClick()} className={className} alt={imageUrl} src={imageUrl.length > 0 ? imageUrl : LoadingGif} />
     )
 }
 export default Image;
