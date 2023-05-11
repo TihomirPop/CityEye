@@ -47,7 +47,7 @@ function AddUser({currentUser}: Props) {
 
   return (
     <>
-      <button className='btn btn-primary' onClick={() => setAddingUser(true)}>Add User</button>
+      <button className='btn btn-primary addUserButton' onClick={() => setAddingUser(true)}>Add User</button>
       { addingUser ?
       <>
         <div id='addUserGrayedOut' onClick={() => setAddingUser(false)} />
