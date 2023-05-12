@@ -21,7 +21,7 @@ function Auth({logIn}: Props) {
             <input type="password" className="form-control" onChange={(e: BaseSyntheticEvent) => setPassword(e.target.value)} />
         </div>
         <div className='signInButtonWrapper'>
-          <button type="submit" id='signInButton' className="btn btn-primary signInButton">Prijavite se</button>
+          <button type="submit" id='signInButton' className="btn btn-primary signInButton">Login</button>
         </div>
       </form>
     </div>
