@@ -124,11 +124,11 @@ const ProblemsList = () => {
     <div>
       <div className='problemsTabs'>
         <div className='problemsTabWrapper'>
-          <button className='problemsTabButton' onClick={() => {setSearch(''); setScreen('problems');}}>Problems</button>
+          <button className={screen == 'problems' ? 'problemsTabButton' : 'problemsTabButton notSelectedProblemsTabButton'} onClick={() => {setSearch(''); setScreen('problems');}}>Problems</button>
           {screen == 'problems' && <div className='problemsTabBorder' />}
         </div>
         <div className='problemsTabWrapper'>
-          <button className='problemsTabButton' onClick={() => {setSearch(''); setScreen('map');}}>Map</button>
+          <button className={screen == 'map' ? 'problemsTabButton' : 'problemsTabButton notSelectedProblemsTabButton'} onClick={() => {setSearch(''); setScreen('map');}}>Map</button>
           {screen == 'map' && <div className='problemsTabBorder' />}
         </div>
       </div>

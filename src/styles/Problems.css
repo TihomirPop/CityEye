@@ -204,10 +204,15 @@
   border-radius: 3px 3px 0 0;
   border-top: 3px solid #0D6EFD;
 }
+.notSelectedProblemsTabButton:hover{
+  color: #CED4DA;
+  transition-duration: 200ms;
+}
 
 .problemsFilters{
   display: flex;
   justify-content: center;
+  margin-top: 15px;
 }
 #problemListSearchBar{
   max-width: 500px;
