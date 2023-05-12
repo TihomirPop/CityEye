@@ -1,8 +1,9 @@
 import { useState } from "react";
 import AreYouSure from "../confirmation/AreYouSure";
 import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../config/Firebase";
+import { db, storage } from "../../config/Firebase";
 import '../../styles/Events.css';
+import { deleteObject, ref } from "firebase/storage";
 
 export interface EventInterface{
     id: string;
@@ -27,6 +28,7 @@ const Event = ({event, index}: Props) => {
 
     const deleteUser = () => {
         deleteDoc(doc(db, 'events', event.id));
+        deleteObject(ref(storage, 'eventImages/' + event.imageUrl));
         setPopup(false);
     }
 

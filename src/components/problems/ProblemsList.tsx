@@ -1,6 +1,6 @@
 import { useState, useEffect, BaseSyntheticEvent } from 'react';
 import 'firebase/firestore';
-import { addDoc, collection, doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import '../../styles/Problems.css'
 import { db } from '../../config/Firebase';
 import Problem, { ProblemInterface } from './Problem';
@@ -168,6 +168,7 @@ const ProblemsList = () => {
                   <div className="popupContent">
                     <h1 className="card__header">{selectedProblem.title}</h1>
                     <p className="card__date">{selectedProblem.imageName.substring(5, 24).replace('_', ' ')}</p>
+                    <p className='card__address'>{selectedProblem.address}</p>
                     <p className="card__text">{selectedProblem.description}</p>
                     {
                       selectedProblem.solved ? <p>{odgovor}</p> :

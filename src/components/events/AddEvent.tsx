@@ -65,6 +65,7 @@ const AddEvent = ({currentUser}: Props) => {
           id="title"
           value={title}
           onChange={(event) => setTitle(event.target.value)}
+          placeholder='Title...'
           required
         />
       </div>
@@ -78,6 +79,7 @@ const AddEvent = ({currentUser}: Props) => {
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           rows={5}
+          placeholder='Description...'
           required
         />
       </div>
@@ -130,6 +132,7 @@ const AddEvent = ({currentUser}: Props) => {
           id="location"
           value={location}
           onChange={(event) => setLocation(event.target.value)}
+          placeholder='Location...'
           required
         />
       </div>
@@ -143,6 +146,7 @@ const AddEvent = ({currentUser}: Props) => {
           id="locationAddress"
           value={locationAddress}
           onChange={(event) => setLocationAddress(event.target.value)}
+          placeholder='Address...'
           required
         />
       </div>

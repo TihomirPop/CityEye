@@ -1,9 +1,9 @@
-import { BaseSyntheticEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { GoogleMap, MarkerF, InfoWindowF} from "@react-google-maps/api";
 import { collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import { db } from '../../config/Firebase';
 import AreYouSure from '../confirmation/AreYouSure';
-import Marker, { MarkerInterface } from './Marker';
+import { MarkerInterface } from './Marker';
 import '../../styles/Marker.css'
 
 import EVCharger from '../assets/car-charger.png';

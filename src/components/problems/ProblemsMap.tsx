@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { GoogleMap, HeatmapLayerF} from "@react-google-maps/api";
 import '../../styles/Problems.css'
 import { ProblemInterface } from './Problem';
