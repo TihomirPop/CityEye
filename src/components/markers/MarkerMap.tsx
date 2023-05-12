@@ -8,6 +8,8 @@ import '../../styles/Marker.css'
 
 import EVCharger from '../assets/car-charger.png';
 import MobileCharger from '../assets/mobile-charger.png';
+import MarkersList from './MarkersList';
+import MarkersDropdown from './MarkersDropdown';
 
 const MarkerMap = () => {
     const [markers, setMarkers] = useState<MarkerInterface[]>([]);
@@ -16,6 +18,7 @@ const MarkerMap = () => {
     const [selectedOption, setSelectedOption] = useState('autoPunjac');
     const [popup, setPopup] = useState(false);
     const [addingMarker, setAddingMarker] = useState(false);
+    const [screen, setScreen] = useState('map');
 
     useEffect(() => {
         getDocs(collection(db, 'markers')).then((results) => {
@@ -70,10 +73,6 @@ const MarkerMap = () => {
         setSelectedMarker(null);
     }
 
-    const handleOptionChange = (e: BaseSyntheticEvent) => {
-        setSelectedOption(e.target.value);
-    }
-
     const mapMarkerIcon = (type: string) => {
         switch(type) {
             case 'autoPunjac':
@@ -86,70 +85,62 @@ const MarkerMap = () => {
     const mapContainerStyle = {
         height: "600px",
         width: "calc(100% - 60px)",
-        margin: "30px auto"
+        margin: "0 auto"
     }
       
     const center = useMemo(() => ({lat: 45.811225, lng: 15.979138}), []);
 
     return (
         <>
-        <div>
-            <label>
-                <input
-                type="radio"
-                value="autoPunjac"
-                checked={selectedOption == 'autoPunjac'}
-                onChange={handleOptionChange}
-                />
-                EV Charger
-            </label>
-            <br />
-            <label>
-                <input
-                type="radio"
-                value="solarnaKlupa"
-                checked={selectedOption == 'solarnaKlupa'}
-                onChange={handleOptionChange}
-                />
-                Solar Bench
-            </label>
-        </div>
-        <button onClick={() => setAddingMarker(true)}>Add marker</button>
-        <p>{addingMarker ? 'click anywhere on the map to add a marker' : <span>&nbsp;</span>}</p>
-
-        <GoogleMap
-        id="markerMap"
-        mapContainerStyle={mapContainerStyle}
-        zoom={13}
-        center={center}
-        onClick={addMarker}
-        options={{ styles: [{elementType: 'labels', featureType: 'poi', stylers: [{ visibility: 'off', }],}], fullscreenControl: false, streetViewControl: false}}>
-        {markers.map((marker: MarkerInterface, index) => (
-            <MarkerF key={marker.id} position={marker.latLng} animation={google.maps.Animation.DROP} icon={mapMarkerIcon(marker.type)}  onClick={() => handleMarkerClick(index, marker)}> 
-                {selectedMarker == marker && (
-                    <InfoWindowF onCloseClick={handleInfoWindowClose}>
-                        <div>
-                            <p>{marker.address}</p>
-                            <i onClick={() => setPopup(true)} className='fa-solid fa-trash-can userButtons' style={{position: 'relative', left: '50%', transform: 'translate(-50%, 0)'}} />
-                        </div>
-                    </InfoWindowF>
-                )}
-            </MarkerF>
-        ))}
-        </GoogleMap>
-        { popup && <AreYouSure onYes={() => selectedMarker ? removeMarker(selectedIndex, selectedMarker.id) : null} onNo={() => setPopup(false)} /> }
-
-        <ul className='markerList'>
-            <li className='markerRow header'>
-                <div className='markerElement small'>#</div>
-                <div className='markerElement medium'>Type</div>
-                <div className='markerElement large'>Address</div>
-                <div className='markerElement small' />
-            </li>
+            <div className='markersTabs'>
+                <div className='markersTabWrapper'>
+                    <button className={screen == 'map' ? 'markersTabButton' : 'markersTabButton notSelectedMarkersTabButton'} onClick={() => setScreen('map')}>Map</button>
+                    {screen == 'map' && <div className='markersTabBorder' />}
+                </div>
+                <div className='markersTabWrapper'>
+                    <button className={screen == 'markers' ? 'markersTabButton' : 'markersTabButton notSelectedMarkersTabButton'} onClick={() => setScreen('markers')}>Markers</button>
+                    {screen == 'markers' && <div className='markersTabBorder' />}
+                </div>
+            </div>
             {
-                markers.map((marker: MarkerInterface, index) => (<Marker marker={marker} index={index} removeMarker={removeMarker} key={marker.id} />))
+                screen == 'map' ? 
+                <>
+                    <div className='addMarkerWrapper'>
+                        <button className='btn btn-primary markerButton' onClick={() => setAddingMarker(true)}>Add marker</button>
+                        {
+                            addingMarker &&
+                            <>
+                                <button className='btn btn-primary cancelAddingMarkerButton' onClick={() => setAddingMarker(false)}>Cancel</button>
+                                <MarkersDropdown selectedMarkers={selectedOption} selectMarkersFunction={setSelectedOption} />
+                                <p className='addingMarkerParagraph'>Click anywhere on the map to add a marker...</p>
+                            </>
+                        }
+                    </div>
+
+                    <GoogleMap
+                    id="markerMap"
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={13}
+                    center={center}
+                    onClick={addMarker}
+                    options={{ styles: [{elementType: 'labels', featureType: 'poi', stylers: [{ visibility: 'off', }],}], fullscreenControl: false, streetViewControl: false}}>
+                    {markers.map((marker: MarkerInterface, index) => (
+                        <MarkerF key={marker.id} position={marker.latLng} animation={google.maps.Animation.DROP} icon={mapMarkerIcon(marker.type)}  onClick={() => handleMarkerClick(index, marker)}> 
+                            {selectedMarker == marker && (
+                                <InfoWindowF onCloseClick={handleInfoWindowClose}>
+                                    <div>
+                                        <p>{marker.address}</p>
+                                        <i onClick={() => setPopup(true)} className='fa-solid fa-trash-can userButtons' style={{position: 'relative', left: '50%', transform: 'translate(-50%, 0)'}} />
+                                    </div>
+                                </InfoWindowF>
+                            )}
+                        </MarkerF>
+                    ))}
+                    </GoogleMap>
+                </> :
+                <MarkersList markers={markers} removeMarker={removeMarker} />
             }
-        </ul>
+            { popup && <AreYouSure onYes={() => selectedMarker ? removeMarker(selectedIndex, selectedMarker.id) : null} onNo={() => setPopup(false)} /> }
         </>
     );
 };
