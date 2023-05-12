@@ -23,6 +23,8 @@ const ProblemsList = () => {
   const [selectedImage, setSelectedImage] = useState('');
   const [sendingAnswer, setSendingAnswer] = useState(false);
   const [selectedProblemType, setSelectedProblemType] = useState('Not solved problems');
+  const [mapCentar, setMapCentar] = useState<google.maps.LatLng | google.maps.LatLngLiteral | undefined>({lat: 45.811225, lng: 15.979138});
+  const [mapZoom, setMapZoom] = useState<number | undefined>(13);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'problems'), (snapshot) => {
@@ -113,6 +115,11 @@ const ProblemsList = () => {
     window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
   }
 
+  const setMapCenterAndZoom = (mapCentar: google.maps.LatLng | google.maps.LatLngLiteral | undefined, mapZoom: number | undefined) => {
+    setMapCentar(mapCentar); 
+    setMapZoom(mapZoom);
+  }
+
   return (
     <div>
       <div className='problemsTabs'>
@@ -183,7 +190,7 @@ const ProblemsList = () => {
           </> : null
         }
         </> :
-        <ProblemsMap key={JSON.stringify(filteredProblems)} problems={filteredProblems} />
+        <ProblemsMap mapCentar={mapCentar} mapZoom={mapZoom} setMapCenterAndZoom={setMapCenterAndZoom} key={JSON.stringify(filteredProblems)} problems={filteredProblems} problemType={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />
       }
     </div>
   )

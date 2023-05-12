@@ -248,6 +248,7 @@
 .problem-dropdown-element{
   border: 1px solid #CED4DA;
   border-top: none;
+  padding: 6px;
 }
 .problem-dropdown-element:hover{
   background-color: #DDD;
@@ -258,4 +259,9 @@
   margin-top: -5px;
   border-left: 1px solid #CED4DA;
   border-right: 1px solid #CED4DA;
+}
+.mapProblemsDropdownWrapper{
+  margin-left: 10px;
+  margin-top: 15px;
+  display: flex;
 }
