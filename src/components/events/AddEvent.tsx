@@ -4,6 +4,7 @@ import { addDoc, collection, updateDoc } from 'firebase/firestore';
 import { db, storage } from '../../config/Firebase';
 import { WebUser } from '../users/User';
 import { ref, uploadBytes } from 'firebase/storage';
+import '../../styles/Events.css';
 
 interface Props{
   currentUser: WebUser;
@@ -54,11 +55,12 @@ const AddEvent = ({currentUser}: Props) => {
   };
 
   return (
-    <form onSubmit={handleAddEvent}>
+    <form onSubmit={handleAddEvent} className='addEventForm'>
       <div>
         <label htmlFor="title">Title</label>
         <br />
         <input
+          className='form-control'
           type="text"
           id="title"
           value={title}
@@ -71,9 +73,11 @@ const AddEvent = ({currentUser}: Props) => {
         <label htmlFor="description">Description</label>
         <br />
         <textarea
+          className='form-control'
           id="description"
           value={description}
           onChange={(event) => setDescription(event.target.value)}
+          rows={5}
           required
         />
       </div>
@@ -82,6 +86,7 @@ const AddEvent = ({currentUser}: Props) => {
         <label htmlFor="epochStart">Start Time</label>
         <br />
         <input
+          className='form-control'
           type="datetime-local"
           id="epochStart"
           value={epochStart}
@@ -94,6 +99,7 @@ const AddEvent = ({currentUser}: Props) => {
         <label htmlFor="epochEnd">End Time</label>
         <br />
         <input
+          className='form-control'
           type="datetime-local"
           id="epochEnd"
           value={epochEnd}
@@ -106,6 +112,7 @@ const AddEvent = ({currentUser}: Props) => {
         <label htmlFor="image">Image URL</label>
         <br />
         <input
+          className='form-control'
           type="file"
           accept="image/*"
           id="image"
@@ -118,6 +125,7 @@ const AddEvent = ({currentUser}: Props) => {
         <label htmlFor="location">Location</label>
         <br />
         <input
+          className='form-control'
           type="text"
           id="location"
           value={location}
@@ -130,6 +138,7 @@ const AddEvent = ({currentUser}: Props) => {
         <label htmlFor="locationAddress">Address</label>
         <br />
         <input
+          className='form-control'
           type="text"
           id="locationAddress"
           value={locationAddress}
@@ -142,6 +151,7 @@ const AddEvent = ({currentUser}: Props) => {
         <label htmlFor="price">Price</label>
         <br />
         <input
+          className='form-control'
           type="number"
           id="price"
           value={price}
@@ -150,7 +160,7 @@ const AddEvent = ({currentUser}: Props) => {
         />
       </div>
       <br />
-      <button type="submit">Add Event</button>
+      <button type="submit" className="btn btn-primary">Add Event</button>
     </form>
   );
 };

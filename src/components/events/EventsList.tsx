@@ -5,6 +5,7 @@ import AddEvent from './AddEvent';
 import { db } from '../../config/Firebase';
 import Event, { EventInterface } from './Event';
 import { WebUser } from '../users/User';
+import '../../styles/Events.css';
 
 interface Props{
   currentUser: WebUser;
@@ -12,6 +13,7 @@ interface Props{
 
 const EventsList = ({currentUser}: Props) => {
   const [events, setEvents] = useState<EventInterface[]>([]);
+  const [screen, setScreen] = useState('active');
 
   useEffect(() => {
     const unsubscribe = onSnapshot(query(collection(db, 'events'), where('city', '==', currentUser.city)) , (snapshot) => {
@@ -33,17 +35,48 @@ const EventsList = ({currentUser}: Props) => {
     return unsubscribe;
   }, []);
 
+  const getFilteredEvents = () => {
+    if(screen == 'active')
+      return events.filter((event) => event.epochEnd >= Date.now() / 1000);
+    else if(screen == 'archived')
+      return events.filter((event) => event.epochEnd < Date.now() / 1000);
+    else
+      return [];
+  }
+
   return (
-    <div>
-      <AddEvent currentUser={currentUser} />    
-      <br />
-      <br />
-    <ul>
-      {events.map((event: EventInterface) => (
-        <Event event={event} key={event.id} />
-      ))}
-    </ul>
-    </div>
+    <>
+      <div className='eventsTabs'>
+        <div className='eventsTabWrapper'>
+          <button className={screen == 'active' ? 'eventsTabButton' : 'eventsTabButton notSelectedEventsTabButton'} onClick={() => setScreen('active')}>Active</button>
+          {screen == 'active' && <div className='eventsTabBorder' />}
+        </div>
+        <div className='eventsTabWrapper'>
+          <button className={screen == 'archived' ? 'eventsTabButton' : 'eventsTabButton notSelectedEventsTabButton'} onClick={() => setScreen('archived')}>Archived</button>
+          {screen == 'archived' && <div className='eventsTabBorder' />}
+        </div>
+        <div className='eventsTabWrapper'>
+          <button className={screen == 'add' ? 'eventsTabButton' : 'eventsTabButton notSelectedEventsTabButton'} onClick={() => setScreen('add')}>Add event</button>
+          {screen == 'add' && <div className='eventsTabBorder' />}
+        </div>
+      </div>
+      {
+        screen == 'add' ? <AddEvent currentUser={currentUser} /> :
+        <ul className='eventList'>
+          <li className='markerRow'>
+            <div className='eventElement eventSmall header'>#</div>
+            <div className='eventElement eventMedium header'>Title</div>
+            <div className='eventElement eventLarge header'>Description</div>
+            <div className='eventElement eventMedium header'>Start time</div>
+            <div className='eventElement eventMedium header'>End time</div>
+            <div className='eventElement eventSmall header' />
+          </li>
+          {getFilteredEvents().map((event: EventInterface, index: number) => (
+            <Event index={index} event={event} key={event.id} />
+          ))}
+        </ul>
+      }  
+    </>
   );
 };
 

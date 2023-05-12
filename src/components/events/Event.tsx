@@ -2,6 +2,7 @@ import { useState } from "react";
 import AreYouSure from "../confirmation/AreYouSure";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../config/Firebase";
+import '../../styles/Events.css';
 
 export interface EventInterface{
     id: string;
@@ -18,9 +19,10 @@ export interface EventInterface{
 
 interface Props{
     event: EventInterface;
+    index: number;
 }
 
-const Event = ({event}: Props) => {
+const Event = ({event, index}: Props) => {
     const [popup, setPopup] = useState(false);
 
     const deleteUser = () => {
@@ -29,14 +31,14 @@ const Event = ({event}: Props) => {
     }
 
     return(
-        <li>
-            <h3>{event.title}</h3>
-            <p>{event.description}</p>
-            <p>Start Time: {new Date(event.epochStart * 1000).toLocaleString()}</p>
-            <p>End Time: {new Date(event.epochEnd * 1000).toLocaleString()}</p>
-            <button onClick={() => setPopup(true)}>X</button>
+        <li className='eventRow'>
+            <div className='eventElement eventSmall'>{index + 1}.</div>
+            <div className='eventElement eventMedium'>{event.title}</div>
+            <div className='eventElement eventLarge'>{event.description}</div>
+            <div className='eventElement eventMedium'>{new Date(event.epochStart * 1000).toLocaleString()}</div>
+            <div className='eventElement eventMedium'>{new Date(event.epochEnd * 1000).toLocaleString()}</div>
+            <div className='eventElement eventSmall'>{<i onClick={() => setPopup(true)} className='fa-solid fa-trash-can userButtons' />}</div>
             { popup ? <AreYouSure onYes={deleteUser} onNo={() => setPopup(false)} /> : null }
-            <br />
         </li>
     )
 };
