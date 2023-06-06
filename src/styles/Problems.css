@@ -17,6 +17,7 @@
 .grid__item:hover {
   transform: translateY(-0.5%);
   box-shadow: 0 4rem 8rem rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 }
 
 .card__img {
@@ -37,40 +38,30 @@
 }
 .card__header {
   color: #0d0d0d;
-  font-weight: bold;
+  font-weight: 500;
   margin-bottom: 10px;
-  font-size: 28px;
+  font-size: 24px;
   overflow-wrap: break-word;
 }
-.card__header:hover{
-  cursor: pointer;
+.card__date{
+  color: #929292;
+  margin: 0;
+}
+.card__address{
+  color: #929292;
+  margin: 0;
 }
 .card__text {
   color: #3d3d3d;
   overflow-wrap: break-word;
 }
-.card__btn {
-  display: block;
-  width: 100%;
-  text-align: center;
-  color: #3363ff;
-  background-color: #e6ecff;
-  border: none;
-  border-radius: 0.4rem;
-  transition: 0.2s;
-  cursor: pointer;
-  padding: 10px;
-  margin-top: 5px;
-}
-.card__btn span {
-  margin-left: 1rem;
-  transition: 0.2s;
-}
-.card__btn:hover, .card__btn:active {
-  background-color: #dce4ff;
-}
-.card__btn:hover span, .card__btn:active span {
-  margin-left: 1.5rem;
+.chatButton{
+  width: 100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .map-container{
@@ -108,6 +99,9 @@
   height: 92%;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .popupImage {
   display: block;
@@ -270,4 +264,95 @@
   margin-left: 10px;
   margin-top: 15px;
   display: flex;
+}
+
+.messages {
+  padding: 10px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+}
+
+.sendMessage {
+  width: 100%;
+  display: flex;
+  font-size: 1.5rem;
+}
+
+.sendMessage button {
+  width: 20%;
+}
+
+.sendMessage input {
+  width: 100%;
+  outline: none;
+  border: none;
+  margin-right: 10px;
+}
+
+.sendMessage button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.message p {
+  max-width: 500px;
+  margin-bottom: 12px;
+  line-height: 24px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  position: relative;
+  text-align: left;
+}
+
+.message {
+  display: flex;
+  align-items: top;
+  margin-bottom: 12px;
+}
+.message p {
+  margin: 0;
+  display: flex;
+  align-items: end;
+}
+
+.sent {
+  flex-direction: row-reverse;
+}
+
+.sent p {
+  color: white;
+  background: #0b93f6;
+  align-self: flex-end;
+}
+.received p {
+  background: #e5e5ea;
+  color: black;
+}
+
+.message img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 2px 5px;
+}
+
+.messageTime{
+  font-size: 10px;
+  margin-bottom: -5px;
+  margin-left: 6px;
+}
+
+.sent .messageTime{
+  color: #d7d7d7;
+}
+
+.received .messageTime {
+  color: #929292;
+}
+
+.messageDate{
+  text-align: center;
+  color: #929292;
+  margin: 20px 0;
 }

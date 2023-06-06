@@ -1,10 +1,9 @@
-import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
+//import { doc, getDoc } from 'firebase/firestore';
 import '../../styles/Problems.css'
-import { BaseSyntheticEvent, useEffect, useState } from "react";
-import { db } from '../../config/Firebase';
+import { BaseSyntheticEvent } from "react";
+//import { db } from '../../config/Firebase';
 import Image from './Image';
 
-import LoadingGif from '../assets/loading.gif';
 
 export interface ProblemInterface{
     id: string;
@@ -25,60 +24,40 @@ export interface ProblemInterface{
 
 interface Props{
     problem: ProblemInterface,
-    selectProblem: (problem: ProblemInterface) => void
+    selectProblem: (problem: ProblemInterface, showMessages: boolean) => void
 }
 
 function Problem({problem, selectProblem}: Props) {
-    const [answer, setAnswer] = useState('');
-    const [sendingAnswer, setSendingAnswer] = useState(false);
-    const [odgovor, setOdgovor] = useState<any>(null);
+    //const [odgovor, setOdgovor] = useState<any>(null);
 
-    useEffect(() => {
+    /*useEffect(() => {
         if(problem.solved){
             getDoc(doc(db, 'answers', problem.answerID)).then((doc) => {
                 setOdgovor(doc.data()?.response);
             });
         }
-    }, [])
+    }, [])*/
 
-    const dateToString = (date: Date) => {
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const year = date.getFullYear();
-        return `${day}.${month}.${year}.`;
-    }
-    
-    const odgovori = async () => {
-        if(answer.length > 3 && answer.length <= 300){
-            addDoc(collection(db, 'answers'), {
-                problemID: problem.id,
-                response: answer,
-                timeOfResponse: dateToString(new Date()),
-                userID: problem.uid
-            });
-            setSendingAnswer(true);
+    const clickProblem = (e: BaseSyntheticEvent) => {
+        const tagName = (e.target as HTMLElement).tagName;
+        if(tagName == 'BUTTON' || tagName == 'I') {
+            selectProblem(problem, true);
+        } else {
+            selectProblem(problem, false);
         }
     }
 
     return (
-    <div className="grid__item">
-        {
-            sendingAnswer ? <img className='card__sending' alt='sending...' src={LoadingGif} /> :
-            <>
-                <Image onClick={() => selectProblem(problem)} img={problem.imageName} className='card__img' />
-                <div className="card__content">
-                    <h1 className="card__header" onClick={() => selectProblem(problem)}>{problem.title.length > 15 ? problem.title.substring(0, 15) + '...' : problem.title}</h1>
-                    <p className="card__date">{problem.imageName.substring(5, 24).replace('_', ' ')}</p>
-                    <p className="card__text">{problem.description.length > 100 ? problem.description.substring(0, 100) + '...' : problem.description}</p>
-                    { problem.solved ? <p>{odgovor && odgovor.length > 80 ? odgovor.substring(0, 80) + '...' : odgovor}</p> :
-                    <>
-                        <input placeholder='Answer...' type="text" className="form-control" onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
-                        <button className="card__btn" onClick={odgovori}>Odgovori <span>&rarr;</span></button>
-                    </>
-                    }
-                </div>
-            </>
-        }
+    <div className="grid__item" onClick={clickProblem}>
+        <Image onClick={() => null} img={problem.imageName} className='card__img' />
+        <div className="card__content">
+            <div>
+                <h1 className="card__header">{problem.title.length > 40 ? problem.title.substring(0, 40) + '...' : problem.title}</h1>
+                <p className="card__date">{problem.imageName.substring(5, 24).replace('_', ' ')}</p>
+            </div>
+            <p className="card__text">{problem.description.length > 100 ? problem.description.substring(0, 100) + '...' : problem.description}</p>
+            <button className='btn btn-primary chatButton' style={{display: 'flex'}}>Chat <i className="fa-regular fa-comment-dots" /></button>
+        </div>
     </div>
     );
 }

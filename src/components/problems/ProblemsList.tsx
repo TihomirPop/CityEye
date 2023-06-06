@@ -1,21 +1,27 @@
 import { useState, useEffect, BaseSyntheticEvent } from 'react';
 import 'firebase/firestore';
-import { addDoc, collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import '../../styles/Problems.css'
 import { db } from '../../config/Firebase';
 import Problem, { ProblemInterface } from './Problem';
 import Image from './Image';
 import ProblemsMap from './ProblemsMap';
 
-import LoadingGif from '../assets/loading.gif';
+//import LoadingGif from '../assets/loading.gif';
 import ProblemsDropdown from './ProblemsDropdown';
+import SelectedProblem from './SelectedProblem';
+import { WebUser } from '../users/User';
 
-const ProblemsList = () => {
+interface Props{
+  currentUser: WebUser;
+}
+
+const ProblemsList = ({currentUser}: Props) => {
   const [problems, setProblems] = useState<ProblemInterface[]>([]);
   const [filteredProblems, setFilteredProblems] = useState<ProblemInterface[]>([]);
   const [selectedProblem, setSelectedProblem] = useState<ProblemInterface | null>(null);
-  const [answer, setAnswer] = useState('');
-  const [odgovor, setOdgovor] = useState<any>(null);
+  //const [answer, setAnswer] = useState('');
+  //const [odgovor, setOdgovor] = useState<any>(null);
   const [search, setSearch] = useState('');
   const [screen, setScreen] = useState('problems');
   const [page, setPage] = useState(1);
@@ -25,6 +31,7 @@ const ProblemsList = () => {
   const [selectedProblemType, setSelectedProblemType] = useState('Not solved problems');
   const [mapCentar, setMapCentar] = useState<google.maps.LatLng | google.maps.LatLngLiteral | undefined>({lat: 45.811225, lng: 15.979138});
   const [mapZoom, setMapZoom] = useState<number | undefined>(13);
+  const [showMessages, setShowMessages] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'problems'), (snapshot) => {
@@ -43,7 +50,7 @@ const ProblemsList = () => {
 
   useEffect(() => {
     setFilteredProblems(problems.filter(filterFunction));
-    setSelectedProblem(null);
+    //setSelectedProblem(null);
     setSendingAnswer(false);
   }, [problems]);
 
@@ -75,26 +82,27 @@ const ProblemsList = () => {
     }
   }
 
-  const selectProblem = (problem: ProblemInterface) => { 
+  const selectProblem = (problem: ProblemInterface, showMessages: boolean) => { 
     setSelectedProblem(problem);
-    if(problem.solved){
+    setShowMessages(showMessages);
+    /*if(problem.solved){
       getDoc(doc(db, 'answers', problem.answerID)).then((doc) => setOdgovor(doc.data()?.response))
-    }
+    }*/
   }
 
   const unselectProblem = () => { 
     setSelectedProblem(null); 
-    setOdgovor(null);
+    //setOdgovor(null);
   }
 
-  const dateToString = (date: Date) => {
+  /*const dateToString = (date: Date) => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     return `${day}.${month}.${year}.`;
-  }
+  }*/
 
-  const odgovori = async () => {
+  /*const odgovori = async () => {
     if(answer.length > 3 && answer.length <= 300 && selectedProblem){
       addDoc(collection(db, 'answers'), {
         problemID: selectedProblem.id,
@@ -104,7 +112,7 @@ const ProblemsList = () => {
       });
       setSendingAnswer(true);
     }
-  }
+  }*/
 
   const pageBack = () => {
     setPage((page) => page - 1);
@@ -160,7 +168,29 @@ const ProblemsList = () => {
           selectedProblem != null ?
           <>
             <div id='grayedOut' onClick={sendingAnswer ? void 0 : unselectProblem} />
-            <div id='popup'>
+            <SelectedProblem problem={selectedProblem} currentUser={currentUser} showMessages={showMessages} setSelectedImage={(img) => setSelectedImage(img)} />
+            {
+              selectedImage.length > 0 &&
+              <>
+                <div id='imageBackground' onClick={() => setSelectedImage('')} />
+                <Image onClick={() => void 0} img={selectedImage} className='bigImage' />
+              </>
+            }
+          </> : null
+        }
+        </> :
+        <ProblemsMap mapCentar={mapCentar} mapZoom={mapZoom} setMapCenterAndZoom={setMapCenterAndZoom} key={JSON.stringify(filteredProblems)} problems={filteredProblems} problemType={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />
+      }
+    </div>
+  )
+};
+
+export default ProblemsList;
+
+
+/*
+
+<div id='popup'>
               {
                 sendingAnswer ? <img src={LoadingGif} className='popupSendingGif' /> :
                 <>
@@ -181,20 +211,5 @@ const ProblemsList = () => {
                 </>
               }
             </div>
-            {
-              selectedImage.length > 0 &&
-              <>
-                <div id='imageBackground' onClick={() => setSelectedImage('')} />
-                <Image onClick={() => void 0} img={selectedImage} className='bigImage' />
-              </>
-            }
-          </> : null
-        }
-        </> :
-        <ProblemsMap mapCentar={mapCentar} mapZoom={mapZoom} setMapCenterAndZoom={setMapCenterAndZoom} key={JSON.stringify(filteredProblems)} problems={filteredProblems} problemType={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />
-      }
-    </div>
-  )
-};
 
-export default ProblemsList;
+*/

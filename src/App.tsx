@@ -63,7 +63,7 @@ function App() {
       case 'Map':
         return (isLoaded ? <MarkerMap /> : <p>Loading...</p>);
       case 'Problems':
-        return (isLoaded ? <ProblemsList /> : <p>Loading...</p>);
+        return (isLoaded ? <ProblemsList currentUser={currentUser} /> : <p>Loading...</p>);
       default:
         return null;
     }
