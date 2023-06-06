@@ -1,7 +1,7 @@
 import '../../styles/Problems.css'
 import { useState, useEffect, BaseSyntheticEvent, useRef } from 'react';
 import { ProblemInterface } from './Problem';
-import { addDoc, collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/Firebase';
 import ChatMessage, { Message } from './ChatMessage';
 import { WebUser } from '../users/User';
@@ -18,6 +18,7 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
     const [messages, setMessages] = useState<Message[]>([]);
     const [formValue, setFormValue] = useState('');
     const [showChat, setShowChat] = useState(showMessages);
+    const [locked, setLocked] = useState(problem.solved);
     const scroll = useRef<HTMLSpanElement>(null);
 
     const coll = collection(db, 'messages', problem.id, 'problemMessages');
@@ -32,6 +33,8 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
     useEffect(() => {
         if(scroll.current)
             scroll.current.scrollIntoView({ behavior: 'smooth' });
+        if(messages.some((message) => message.isAnswer))
+            setLocked(true);
     }, [messages, showChat])
 
     const sendMessage = async (e: BaseSyntheticEvent) => {
@@ -59,10 +62,35 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
                 components.push(<div className='messageDate' key={date.toDateString()}>{date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + '.'}</div>);
             previousMessageDate = date;
 
-            components.push(<ChatMessage key={message.id} message={message} currentUser={currentUser} />)
+            components.push(<ChatMessage setAnswer={answer} key={message.id} message={message} currentUser={currentUser} />)
         }
 
         return components;
+    }
+
+    const dateToString = (date: Date) => {
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+
+        return `${day}.${month}.${year}.`;
+    }
+
+    const answer = async (message: Message) => {
+        if(!problem.solved && !locked && message.userID == currentUser.id){
+            addDoc(collection(db, 'answers'), {
+                problemID: problem.id,
+                response: message.text,
+                timeOfResponse: dateToString(new Date()),
+                userID: problem.uid
+            });
+            
+            updateDoc(doc(db, 'messages', problem.id, 'problemMessages', message.id), {
+                isAnswer: true
+            })
+
+            setLocked(true);
+        }  
     }
 
     return (
@@ -76,8 +104,8 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
                     </div>
 
                     <form className='sendMessage' onSubmit={sendMessage}>
-                        <input className='form-control' value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="Type a message..." />
-                        <button type="submit" className='btn btn-primary' disabled={!formValue}>Send</button>
+                        <input className='form-control' value={formValue} disabled={locked} onChange={(e) => setFormValue(e.target.value)} placeholder="Type a message..." />
+                        <button type="submit" className='btn btn-primary' disabled={!formValue || locked}>Send</button>
                     </form>
                 </> :
                 <>

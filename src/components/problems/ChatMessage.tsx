@@ -4,6 +4,7 @@ import { WebUser } from '../users/User';
 interface Props{
     message: Message;
     currentUser: WebUser;
+    setAnswer: (text: Message) => void;
 }
 
 export interface Message{
@@ -13,9 +14,10 @@ export interface Message{
     time: number;
     userID: string;
     photoUrl: string;
+    isAnswer: boolean; 
 }
 
-function ChatMessage({message, currentUser}: Props) {
+function ChatMessage({message, currentUser, setAnswer}: Props) {
     const getHourMinutes = () => {
         const date: Date = new Date(message.time * 1000);
         const hours: number = date.getHours();
@@ -27,7 +29,7 @@ function ChatMessage({message, currentUser}: Props) {
     return (
     <div className={`message ${message.userID == currentUser.id ? 'sent' : 'received'}`}>
       <img src={message.photoUrl || 'https://cdn.esquimaltmfrc.com/wp-content/uploads/2015/09/flat-faces-icons-circle-man-9.png'} />
-      <p>{message.text} <span className='messageTime'>{getHourMinutes()}</span></p>
+      <p onClick={() => setAnswer(message)} style={message.isAnswer ? {backgroundColor: 'green'} : {}} >{message.text} <span className='messageTime'>{getHourMinutes()}</span></p>
     </div>
     );
 }
