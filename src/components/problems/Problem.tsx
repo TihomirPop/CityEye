@@ -20,6 +20,7 @@ export interface ProblemInterface{
     title: string;
     uid: string;
     userName: string;
+    category: string;
 }
 
 interface Props{

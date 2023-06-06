@@ -1,7 +1,7 @@
 import '../../styles/Problems.css'
 import { useState, useEffect, BaseSyntheticEvent, useRef } from 'react';
 import { ProblemInterface } from './Problem';
-import { addDoc, collection, doc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/Firebase';
 import ChatMessage, { Message } from './ChatMessage';
 import { WebUser } from '../users/User';
@@ -54,6 +54,8 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
         const components = [];
         let previousMessageDate = new Date(0);
 
+        components.push(<div className='messagesDescription' key={'messagesDescription' + problem.id}><p>{problem.description}</p></div>)
+
         for(let i = 0; i < messages.length; i++){
             const message = messages[i];
             const date = new Date(message.time * 1000);
@@ -62,7 +64,7 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
                 components.push(<div className='messageDate' key={date.toDateString()}>{date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + '.'}</div>);
             previousMessageDate = date;
 
-            components.push(<ChatMessage setAnswer={answer} key={message.id} message={message} currentUser={currentUser} />)
+            components.push(<ChatMessage setAnswer={answer} key={message.id} message={message} currentUser={currentUser} />);
         }
 
         return components;
@@ -76,7 +78,7 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
         return `${day}.${month}.${year}.`;
     }
 
-    const answer = async (message: Message) => {
+    const answer = (message: Message) => {
         if(!problem.solved && !locked && message.userID == currentUser.id){
             addDoc(collection(db, 'answers'), {
                 problemID: problem.id,
@@ -93,12 +95,47 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
         }  
     }
 
+    const selectDuplicate = async (e: BaseSyntheticEvent) => {
+        e.preventDefault();
+        duplicate('H9qx9ZrKAquNQCrEvszh');
+    }
+    
+    const duplicate = async (anwserId: string) => {
+        if(!problem.solved && !locked){
+            const text: string = (await getDoc(doc(db, 'answers', anwserId))).data()!.response;
+
+            addDoc(collection(db, 'answers'), {
+                problemID: problem.id,
+                response: text,
+                timeOfResponse: dateToString(new Date()),
+                userID: problem.uid,
+                //duplicateOf: anwserId
+            });
+
+            await addDoc(collection(db, 'messages', problem.id, 'problemMessages'), {
+                name: currentUser.name,
+                text: 'Duplicate problem from: ' + anwserId,
+                time: Math.round(Date.now() / 1000),
+                userID: currentUser.id,
+            });
+            addDoc(collection(db, 'messages', problem.id, 'problemMessages'), {
+                name: currentUser.name,
+                text: text,
+                time: Math.round(Date.now() / 1000),
+                userID: currentUser.id,
+                isAnswer: true
+            });
+
+            setLocked(true);
+        }
+    }
+
     return (
         <div id='popup'>
             {
                 showChat ? 
                 <>
-                    <div className='messages'>
+                    <div className='messages' onContextMenu={selectDuplicate}>
                         {renderMessages()}
                         <span ref={scroll} />
                     </div>

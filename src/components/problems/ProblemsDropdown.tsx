@@ -33,7 +33,7 @@ function ProblemsDropdown({selectedProblems, selectProblemsFunction}: Props) {
   };
 
   return (
-    <div className='problem-dropdown'>
+    <div className='problem-dropdown prbdrpdwn'>
       <button onClick={toggleDropdown}>
         <p>{selected}</p>
         <i className='fa-solid fa-chevron-down' />

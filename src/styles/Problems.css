@@ -220,6 +220,9 @@
   margin-bottom: 20px;
   margin-left: 20px;
 }
+.prbdrpdwn {
+  margin-right: 20px;
+}
 .problem-dropdown-menu {
   position: absolute;
   top: 100%;
@@ -295,15 +298,6 @@
   cursor: not-allowed;
 }
 
-.message p {
-  max-width: 500px;
-  margin-bottom: 12px;
-  line-height: 24px;
-  padding: 10px 20px;
-  border-radius: 25px;
-  position: relative;
-  text-align: left;
-}
 
 .message {
   display: flex;
@@ -314,6 +308,13 @@
   margin: 0;
   display: flex;
   align-items: end;
+  max-width: 500px;
+  margin-bottom: 12px;
+  line-height: 24px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  position: relative;
+  text-align: left;
 }
 
 .sent {
@@ -355,4 +356,24 @@
   text-align: center;
   color: #929292;
   margin: 20px 0;
+}
+
+.messagesDescription{
+  display: flex;
+  align-items: top;
+}
+
+.messagesDescription p {
+  margin: 0;
+  display: flex;
+  align-items: end;
+  max-width: 500px;
+  margin-bottom: 12px;
+  line-height: 24px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  position: relative;
+  text-align: left;
+  background: #e5e5ea;
+  color: black;
 }

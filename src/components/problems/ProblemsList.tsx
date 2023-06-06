@@ -11,6 +11,7 @@ import ProblemsMap from './ProblemsMap';
 import ProblemsDropdown from './ProblemsDropdown';
 import SelectedProblem from './SelectedProblem';
 import { WebUser } from '../users/User';
+import CategoryDropdown from './CategoryDropdown';
 
 interface Props{
   currentUser: WebUser;
@@ -32,6 +33,7 @@ const ProblemsList = ({currentUser}: Props) => {
   const [mapCentar, setMapCentar] = useState<google.maps.LatLng | google.maps.LatLngLiteral | undefined>({lat: 45.811225, lng: 15.979138});
   const [mapZoom, setMapZoom] = useState<number | undefined>(13);
   const [showMessages, setShowMessages] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All categories');
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'problems'), (snapshot) => {
@@ -49,21 +51,21 @@ const ProblemsList = ({currentUser}: Props) => {
   }, []);
 
   useEffect(() => {
-    setFilteredProblems(problems.filter(filterFunction));
+    setFilteredProblems(problems.filter(solvedFilterFunction));
     //setSelectedProblem(null);
     setSendingAnswer(false);
   }, [problems]);
 
   useEffect(() => {
     filter();
-  }, [search, selectedProblemType]);
+  }, [search, selectedProblemType, selectedCategory]);
 
   useEffect(() => {
     setPage(1);
     setMaxPage(Math.ceil(filteredProblems.length / 15));
   }, [filteredProblems]);
 
-  const filterFunction = (problem: any) => {
+  const solvedFilterFunction = (problem: ProblemInterface) => {
     switch (selectedProblemType) {
       case 'Not solved problems':
         return !problem.solved;
@@ -74,11 +76,23 @@ const ProblemsList = ({currentUser}: Props) => {
     }
   }
 
+  const categoryFilterFunction = (problem: ProblemInterface) => {
+    console.log("hey");
+    switch (selectedCategory) {
+      case 'All categories':
+        return true;
+      case 'Other':
+        return problem.category == null || problem.category == selectedCategory;
+      default:
+        return problem.category == selectedCategory;
+    }
+  }
+
   const filter = () => {
     if(search.length > 0){
-      setFilteredProblems(problems.filter((problem: any) => filterFunction(problem) && (problem.title.toLowerCase().includes(search.toLowerCase()) || problem.description.toLowerCase().includes(search.toLowerCase()))));
+      setFilteredProblems(problems.filter((problem) => solvedFilterFunction(problem) && categoryFilterFunction(problem) && (problem.title.toLowerCase().includes(search.toLowerCase()) || problem.description.toLowerCase().includes(search.toLowerCase()))));
     } else{
-      setFilteredProblems(problems.filter(filterFunction));
+      setFilteredProblems(problems.filter((problem) => solvedFilterFunction(problem) && categoryFilterFunction(problem)));
     }
   }
 
@@ -147,6 +161,7 @@ const ProblemsList = ({currentUser}: Props) => {
         <div className='problemsFilters'>
           <input type="text" placeholder='Search...' className="form-control" id='problemListSearchBar' onChange={(e: BaseSyntheticEvent) => setSearch(e.target.value)} />
           <ProblemsDropdown selectedProblems={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />
+          <CategoryDropdown selectedCategory={selectedCategory} selectCategory={category => setSelectedCategory(category)} />
         </div>
 
         <div className="grid">
