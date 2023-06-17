@@ -1,7 +1,5 @@
-//import { doc, getDoc } from 'firebase/firestore';
 import '../../styles/Problems.css'
 import { BaseSyntheticEvent } from "react";
-//import { db } from '../../config/Firebase';
 import Image from './Image';
 
 
@@ -29,15 +27,6 @@ interface Props{
 }
 
 function Problem({problem, selectProblem}: Props) {
-    //const [odgovor, setOdgovor] = useState<any>(null);
-
-    /*useEffect(() => {
-        if(problem.solved){
-            getDoc(doc(db, 'answers', problem.answerID)).then((doc) => {
-                setOdgovor(doc.data()?.response);
-            });
-        }
-    }, [])*/
 
     const clickProblem = (e: BaseSyntheticEvent) => {
         const tagName = (e.target as HTMLElement).tagName;

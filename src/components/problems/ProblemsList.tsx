@@ -6,12 +6,11 @@ import { db } from '../../config/Firebase';
 import Problem, { ProblemInterface } from './Problem';
 import Image from './Image';
 import ProblemsMap from './ProblemsMap';
-
-//import LoadingGif from '../assets/loading.gif';
 import ProblemsDropdown from './ProblemsDropdown';
 import SelectedProblem from './SelectedProblem';
 import { WebUser } from '../users/User';
-import CategoryDropdown from './CategoryDropdown';
+import Multiselect from 'multiselect-react-dropdown';
+import Stats from './Stats';
 
 interface Props{
   currentUser: WebUser;
@@ -21,8 +20,6 @@ const ProblemsList = ({currentUser}: Props) => {
   const [problems, setProblems] = useState<ProblemInterface[]>([]);
   const [filteredProblems, setFilteredProblems] = useState<ProblemInterface[]>([]);
   const [selectedProblem, setSelectedProblem] = useState<ProblemInterface | null>(null);
-  //const [answer, setAnswer] = useState('');
-  //const [odgovor, setOdgovor] = useState<any>(null);
   const [search, setSearch] = useState('');
   const [screen, setScreen] = useState('problems');
   const [page, setPage] = useState(1);
@@ -33,14 +30,15 @@ const ProblemsList = ({currentUser}: Props) => {
   const [mapCentar, setMapCentar] = useState<google.maps.LatLng | google.maps.LatLngLiteral | undefined>({lat: 45.811225, lng: 15.979138});
   const [mapZoom, setMapZoom] = useState<number | undefined>(13);
   const [showMessages, setShowMessages] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All categories');
+  const [selectedOptions, setSelectedOptions] = useState<object[]>([]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'problems'), (snapshot) => {
-      const problemsList: ProblemInterface[] = snapshot.docs.map((doc: any) => ({id: doc.id, ...doc.data()}));
+      const problemsList: ProblemInterface[] = snapshot.docs.map((doc: any) => ({id: doc.id, ...doc.data()})).filter((problem) => problem.title != null);
+
 
       problemsList.sort((a: ProblemInterface, b: ProblemInterface) => {
-        if(a.imageName.substring(5, 24) < b.imageName.substring(5, 24)){
+        if(a.epoch < b.epoch){
           return 1;
         }
         return -1;
@@ -52,13 +50,12 @@ const ProblemsList = ({currentUser}: Props) => {
 
   useEffect(() => {
     setFilteredProblems(problems.filter(solvedFilterFunction));
-    //setSelectedProblem(null);
     setSendingAnswer(false);
   }, [problems]);
 
   useEffect(() => {
     filter();
-  }, [search, selectedProblemType, selectedCategory]);
+  }, [search, selectedProblemType, selectedOptions]);
 
   useEffect(() => {
     setPage(1);
@@ -77,15 +74,16 @@ const ProblemsList = ({currentUser}: Props) => {
   }
 
   const categoryFilterFunction = (problem: ProblemInterface) => {
-    console.log("hey");
-    switch (selectedCategory) {
-      case 'All categories':
+    if(selectedOptions.length == 0)
+      return true;
+    
+    if(problem.category == null){
+      if(selectedOptions.some((option: any) => option.name == 'Other'))
         return true;
-      case 'Other':
-        return problem.category == null || problem.category == selectedCategory;
-      default:
-        return problem.category == selectedCategory;
+      return false;
     }
+
+    return selectedOptions.some((option: any) => option.name == problem.category);
   }
 
   const filter = () => {
@@ -99,34 +97,12 @@ const ProblemsList = ({currentUser}: Props) => {
   const selectProblem = (problem: ProblemInterface, showMessages: boolean) => { 
     setSelectedProblem(problem);
     setShowMessages(showMessages);
-    /*if(problem.solved){
-      getDoc(doc(db, 'answers', problem.answerID)).then((doc) => setOdgovor(doc.data()?.response))
-    }*/
+
   }
 
   const unselectProblem = () => { 
     setSelectedProblem(null); 
-    //setOdgovor(null);
   }
-
-  /*const dateToString = (date: Date) => {
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}.`;
-  }*/
-
-  /*const odgovori = async () => {
-    if(answer.length > 3 && answer.length <= 300 && selectedProblem){
-      addDoc(collection(db, 'answers'), {
-        problemID: selectedProblem.id,
-        response: answer,
-        timeOfResponse: dateToString(new Date()),
-        userID: selectedProblem.uid
-      });
-      setSendingAnswer(true);
-    }
-  }*/
 
   const pageBack = () => {
     setPage((page) => page - 1);
@@ -142,89 +118,98 @@ const ProblemsList = ({currentUser}: Props) => {
     setMapZoom(mapZoom);
   }
 
+  const options = [
+    { id: 1, name: 'Traffic' },
+    { id: 2, name: 'Junk' },
+    { id: 3, name: 'Damaged item' },
+    { id: 4, name: 'Other' },
+  ];
+
+  const onSelect = (selectedList: []) => {
+    setSelectedOptions(selectedList);
+  };
+
+  const onRemove = (selectedList: []) => {
+    setSelectedOptions(selectedList);
+  };
+
+  const getScreen = () => {
+    switch (screen) {
+      case 'problems':
+        return (
+          <>
+          <div className="grid">
+            {filteredProblems.slice((page - 1) * 15, page * 15).map((problem: ProblemInterface) => (
+              <Problem problem={problem} key={problem.answerID ? problem.id + problem.answerID : problem.id} selectProblem={selectProblem} />
+            ))}
+          </div>
+          <div id='pages'>
+            {
+              maxPage == 0 ? <p id='noProblemsParagraph'>No problems...</p> :
+              <>
+                {page != 1 ? <button className='pageButtonOn' onClick={() => pageBack()}><i className="fa-solid fa-arrow-left" /></button> : <button className='pageButtonOff'><i className="fa-solid fa-arrow-left" /></button>}
+                {page + '/' + maxPage}
+                {page < maxPage ? <button className='pageButtonOn' onClick={() => pageForward()}><i className="fa-solid fa-arrow-right" /></button> : <button className='pageButtonOff'><i className="fa-solid fa-arrow-right" /></button>}
+              </>
+            }
+          </div>
+          {
+            selectedProblem != null &&
+            <>
+              <div id='grayedOut' onClick={sendingAnswer ? void 0 : unselectProblem} />
+              <SelectedProblem problem={selectedProblem} currentUser={currentUser} showMessages={showMessages} setSelectedImage={(img) => setSelectedImage(img)} />
+              {
+                selectedImage.length > 0 &&
+                <>
+                  <div id='imageBackground' onClick={() => setSelectedImage('')} />
+                  <Image onClick={() => void 0} img={selectedImage} className='bigImage' />
+                </>
+              }
+            </>
+          }
+          </>
+        );
+      case 'map':
+        return <ProblemsMap mapCentar={mapCentar} mapZoom={mapZoom} setMapCenterAndZoom={setMapCenterAndZoom} key={JSON.stringify(filteredProblems)} problems={filteredProblems} problemType={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />;
+      case 'stats':
+        return <Stats filteredProblems={filteredProblems} problems={problems} search={search} categories={selectedOptions} />
+    }
+  }
+
   return (
     <div>
       <div className='problemsTabs'>
         <div className='problemsTabWrapper'>
-          <button className={screen == 'problems' ? 'problemsTabButton' : 'problemsTabButton notSelectedProblemsTabButton'} onClick={() => {setSearch(''); setScreen('problems');}}>Problems</button>
+          <button className={screen == 'problems' ? 'problemsTabButton' : 'problemsTabButton notSelectedProblemsTabButton'} onClick={() => setScreen('problems')}>Problems</button>
           {screen == 'problems' && <div className='problemsTabBorder' />}
         </div>
         <div className='problemsTabWrapper'>
-          <button className={screen == 'map' ? 'problemsTabButton' : 'problemsTabButton notSelectedProblemsTabButton'} onClick={() => {setSearch(''); setScreen('map');}}>Map</button>
+          <button className={screen == 'map' ? 'problemsTabButton' : 'problemsTabButton notSelectedProblemsTabButton'} onClick={() => setScreen('map')}>Map</button>
           {screen == 'map' && <div className='problemsTabBorder' />}
+        </div>
+        <div className='problemsTabWrapper'>
+          <button className={screen == 'stats' ? 'problemsTabButton' : 'problemsTabButton notSelectedProblemsTabButton'} onClick={() => setScreen('stats')}>Stats</button>
+          {screen == 'stats' && <div className='problemsTabBorder' />}
         </div>
       </div>
 
-      {
-        screen == 'problems' ?
-        <>
-        <div className='problemsFilters'>
-          <input type="text" placeholder='Search...' className="form-control" id='problemListSearchBar' onChange={(e: BaseSyntheticEvent) => setSearch(e.target.value)} />
-          <ProblemsDropdown selectedProblems={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />
-          <CategoryDropdown selectedCategory={selectedCategory} selectCategory={category => setSelectedCategory(category)} />
-        </div>
+      <div className='problemsFilters'>
+        <input autoComplete='off' type="text" placeholder='Search...' className="form-control" id='problemListSearchBar' onChange={(e: BaseSyntheticEvent) => setSearch(e.target.value)} />
+        <ProblemsDropdown selectedProblems={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />
+        
+        <Multiselect
+        options={options}
+        displayValue="name"
+        selectedValues={selectedOptions}
+        onSelect={onSelect}
+        onRemove={onRemove}
+        />
+      </div>
 
-        <div className="grid">
-          {filteredProblems.slice((page - 1) * 15, page * 15).map((problem: ProblemInterface) => (
-            <Problem problem={problem} key={problem.answerID ? problem.id + problem.answerID : problem.id} selectProblem={selectProblem} />
-          ))}
-        </div>
-        <div id='pages'>
-          {
-            maxPage == 0 ? <p id='noProblemsParagraph'>No problems...</p> :
-            <>
-              {page != 1 ? <button className='pageButtonOn' onClick={() => pageBack()}><i className="fa-solid fa-arrow-left" /></button> : <button className='pageButtonOff'><i className="fa-solid fa-arrow-left" /></button>}
-              {page + '/' + maxPage}
-              {page < maxPage ? <button className='pageButtonOn' onClick={() => pageForward()}><i className="fa-solid fa-arrow-right" /></button> : <button className='pageButtonOff'><i className="fa-solid fa-arrow-right" /></button>}
-            </>
-          }
-        </div>
-        {
-          selectedProblem != null ?
-          <>
-            <div id='grayedOut' onClick={sendingAnswer ? void 0 : unselectProblem} />
-            <SelectedProblem problem={selectedProblem} currentUser={currentUser} showMessages={showMessages} setSelectedImage={(img) => setSelectedImage(img)} />
-            {
-              selectedImage.length > 0 &&
-              <>
-                <div id='imageBackground' onClick={() => setSelectedImage('')} />
-                <Image onClick={() => void 0} img={selectedImage} className='bigImage' />
-              </>
-            }
-          </> : null
-        }
-        </> :
-        <ProblemsMap mapCentar={mapCentar} mapZoom={mapZoom} setMapCenterAndZoom={setMapCenterAndZoom} key={JSON.stringify(filteredProblems)} problems={filteredProblems} problemType={selectedProblemType} selectProblemsFunction={problemType => setSelectedProblemType(problemType)} />
-      }
+      { getScreen() }
+
     </div>
   )
 };
 
 export default ProblemsList;
-
-
-/*
-
-<div id='popup'>
-              {
-                sendingAnswer ? <img src={LoadingGif} className='popupSendingGif' /> :
-                <>
-                  <Image onClick={() => setSelectedImage(selectedProblem.imageName)} img={selectedProblem.imageName} className='popupImage'/>
-                  <div className="popupContent">
-                    <h1 className="card__header">{selectedProblem.title}</h1>
-                    <p className="card__date">{selectedProblem.imageName.substring(5, 24).replace('_', ' ')}</p>
-                    <p className='card__address'>{selectedProblem.address}</p>
-                    <p className="card__text">{selectedProblem.description}</p>
-                    {
-                      selectedProblem.solved ? <p>{odgovor}</p> :
-                      <>
-                        <textarea placeholder='Answer...' className="form-control" rows={3} onChange={(e: BaseSyntheticEvent) => setAnswer(e.target.value)} />
-                        <button className="card__btn" onClick={odgovori} >Odgovori <span>&rarr;</span></button>
-                      </>
-                    }
-                  </div>
-                </>
-              }
-            </div>
-
-*/
