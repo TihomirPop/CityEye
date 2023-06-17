@@ -63,7 +63,7 @@ const EventsList = ({currentUser}: Props) => {
       {
         screen == 'add' ? <AddEvent currentUser={currentUser} /> :
         <ul className='eventList'>
-          <li className='markerRow'>
+          <li className='eventRow'>
             <div className='eventElement eventSmall header'>#</div>
             <div className='eventElement eventMedium header'>Title</div>
             <div className='eventElement eventLarge header'>Description</div>

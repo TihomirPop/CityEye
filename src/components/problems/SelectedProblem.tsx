@@ -1,7 +1,7 @@
 import '../../styles/Problems.css'
 import { useState, useEffect, BaseSyntheticEvent, useRef } from 'react';
 import { ProblemInterface } from './Problem';
-import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
 import { db } from '../../config/Firebase';
 import ChatMessage, { Message } from './ChatMessage';
 import { WebUser } from '../users/User';
@@ -95,47 +95,12 @@ function SelectedProblem({problem, currentUser, showMessages, setSelectedImage}:
         }  
     }
 
-    const selectDuplicate = async (e: BaseSyntheticEvent) => {
-        e.preventDefault();
-        duplicate('H9qx9ZrKAquNQCrEvszh');
-    }
-    
-    const duplicate = async (anwserId: string) => {
-        if(!problem.solved && !locked){
-            const text: string = (await getDoc(doc(db, 'answers', anwserId))).data()!.response;
-
-            addDoc(collection(db, 'answers'), {
-                problemID: problem.id,
-                response: text,
-                timeOfResponse: dateToString(new Date()),
-                userID: problem.uid,
-                //duplicateOf: anwserId
-            });
-
-            await addDoc(collection(db, 'messages', problem.id, 'problemMessages'), {
-                name: currentUser.name,
-                text: 'Duplicate problem from: ' + anwserId,
-                time: Math.round(Date.now() / 1000),
-                userID: currentUser.id,
-            });
-            addDoc(collection(db, 'messages', problem.id, 'problemMessages'), {
-                name: currentUser.name,
-                text: text,
-                time: Math.round(Date.now() / 1000),
-                userID: currentUser.id,
-                isAnswer: true
-            });
-
-            setLocked(true);
-        }
-    }
-
     return (
         <div id='popup'>
             {
                 showChat ? 
                 <>
-                    <div className='messages' onContextMenu={selectDuplicate}>
+                    <div className='messages'>
                         {renderMessages()}
                         <span ref={scroll} />
                     </div>

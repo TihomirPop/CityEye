@@ -210,9 +210,10 @@
   margin-top: 15px;
 }
 #problemListSearchBar{
-  max-width: 500px;
+  max-width: 400px;
   margin-bottom: 20px;
   margin-right: 20px;
+  max-height: 38px;
 }
 .problem-dropdown {
   position: relative;
@@ -222,6 +223,7 @@
 }
 .prbdrpdwn {
   margin-right: 20px;
+  height: 38.6px;
 }
 .problem-dropdown-menu {
   position: absolute;
@@ -263,6 +265,16 @@
   border-left: 1px solid #CED4DA;
   border-right: 1px solid #CED4DA;
 }
+.problemsFilters .multiSelectContainer{
+  margin-left: 20px;
+  margin-bottom: 20px;
+  background-color: white;
+}
+
+.problemsFilters .multiSelectContainer .searchBox{
+  margin-top: 0px;
+} 
+
 .mapProblemsDropdownWrapper{
   margin-left: 10px;
   margin-top: 15px;

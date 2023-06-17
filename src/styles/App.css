@@ -27,3 +27,147 @@ html{
   flex-shrink: 1; /* shrink if necessary */
   flex-basis: auto; /* set default width */
 }
+
+@media (prefers-color-scheme: dark) {
+  html {
+    filter: invert(1) hue-rotate(180deg);
+    transition: color 300ms, background-color 300ms;
+  }
+  img {
+    filter: invert(1) hue-rotate(180deg);
+  } 
+  #markerMap{
+    filter: invert(1) hue-rotate(180deg);
+  }
+  #markerMap img{
+    filter: invert(0) hue-rotate(0);
+  }
+
+  .grid .grid__item{
+    box-shadow: 0 3rem 6rem #fff;
+    background-color: rgb(228, 228, 238);
+  }
+  .grid .grid__item:hover{
+    box-shadow: 0 3rem 6rem rgb(228, 228, 238);
+  }
+  .grid .btn{
+    color: black;
+  }
+
+  .multiSelectContainer .chip {
+    color: black;
+  }
+
+  .multiSelectContainer .option {
+    color: black;
+  }
+
+  .multiSelectContainer .option:hover {
+    color: black;
+  }
+
+  #problemListSearchBar, .problemsFilters .prbdrpdwn button, .multiSelectContainer .search-wrapper, .problem-dropdown-element, .optionContainer .option{
+    background-color: rgb(228, 228, 238);
+  }
+
+  .card__content .chatButton:hover {
+    color: black;
+  }
+
+  #content #grayedOut {
+    background-color: rgb(169 169 169 / 80%);
+  }
+
+  #content #popup {
+    background-color: rgb(228, 228, 238);
+    box-shadow: none;
+  }
+
+  #content #popup .popupContent .chatButton{
+    color: black;
+  }
+
+  #popup .messages .messagesDescription p, #popup .messages .received p{
+    filter: invert(1) hue-rotate(180deg);
+    background-color: #292A31;
+    color: #C2C2C5;
+  }
+
+  #popup .messages .sent p, #popup .messages .sent p span{
+    color: black;
+  }
+
+  #popup .sendMessage button {
+    color: black;
+  }
+
+  #problemsMap{
+    filter: invert(1) hue-rotate(180deg);
+  }
+  #problemsMap img{
+    filter: invert(0) hue-rotate(0);
+  }
+
+  #markerMap .gmnoprint, #problemsMap .gmnoprint {
+    filter: invert(0.9) hue-rotate(180deg);
+  }
+
+  #content .markerList{
+    border-color: rgb(228, 228, 238);
+  }
+  #content .markerList .markerRow{
+    background-color: rgb(228, 228, 238);
+  }
+  #content .areYouSureGrayedOut{
+    background-color: rgb(169 169 169 / 80%);
+  }
+  #content .areYouSurePopup{
+    background-color: rgb(228, 228, 238);
+    box-shadow: none;
+  }
+  #content .areYouSurePopup button {
+    color: black;
+  }
+
+  #content .listWrapper ul{
+    border-color: rgb(228, 228, 238);
+  }
+  #content .listWrapper ul .userRow{
+    background-color: rgb(228, 228, 238);
+  }
+  #content .listWrapper .btn {
+    color: black;
+  }
+
+  #content #addUserGrayedOut{
+    background-color: rgb(169 169 169 / 80%);
+  }
+  #content #addUserPopup{
+    background-color: rgb(228, 228, 238);
+    box-shadow: none;
+  }
+  #content #addUserPopup button {
+    color: black;
+  }
+
+  #content .eventList {
+    border-color: rgb(228, 228, 238);
+  }
+  #content .eventList .eventRow{
+    background-color: rgb(228, 228, 238);
+  }
+
+  #content .addEventForm input, #content .addEventForm textarea{
+    background-color: rgb(228, 228, 238);
+  }
+  #content .addEventForm button{
+    color: black;
+  }
+
+  #content .addMarkerWrapper .btn {
+    color: black;
+  }
+  #content .addMarkerWrapper .marker-dropdown button, #content .addMarkerWrapper .marker-dropdown .marker-dropdown-element{
+    background-color: rgb(228, 228, 238);
+  }
+}

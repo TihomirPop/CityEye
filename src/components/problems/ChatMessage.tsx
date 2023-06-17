@@ -29,7 +29,7 @@ function ChatMessage({message, currentUser, setAnswer}: Props) {
     return (
     <div className={`message ${message.userID == currentUser.id ? 'sent' : 'received'}`}>
       <img src={message.photoUrl || 'https://cdn.esquimaltmfrc.com/wp-content/uploads/2015/09/flat-faces-icons-circle-man-9.png'} />
-      <p onClick={() => setAnswer(message)} style={message.isAnswer ? {backgroundColor: 'green'} : {}} >{message.text} <span className='messageTime'>{getHourMinutes()}</span></p>
+      <p onContextMenu={(e) => {e.preventDefault(); setAnswer(message);}} style={message.isAnswer ? {backgroundColor: 'green'} : {}} >{message.text} <span className='messageTime'>{getHourMinutes()}</span></p>
     </div>
     );
 }
