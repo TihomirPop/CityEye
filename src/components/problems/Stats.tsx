@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 import '../../styles/Problems.css'
 import { ProblemInterface } from './Problem';
 import { useState, useEffect } from 'react'
